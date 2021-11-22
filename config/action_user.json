@@ -1,0 +1,102 @@
+{
+  "начать": {
+    "controller": "Main",
+    "action": "start"
+  },
+  "start": {
+    "controller": "Main",
+    "action": "start"
+  },
+  "menu1": {
+    "controller": "Main",
+    "action": "menu1"
+  },
+  "menu2": {
+    "controller": "Main",
+    "action": "menu2"
+  },
+  "menu3": {
+    "controller": "Main",
+    "action": "menu3"
+  },
+  "menu4": {
+    "controller": "Main",
+    "action": "menu4"
+  },
+  "create_role": {
+    "controller": "Role",
+    "action": "create"
+  },
+  "edit_role": {
+    "controller": "Role",
+    "action": "edit"
+  },
+  "role_delete": {
+    "controller": "Role",
+    "action": "delete"
+  },
+  "role_title": {
+    "controller": "Role",
+    "action": "title"
+  },
+  "role_access_trigger": {
+    "controller": "Role",
+    "action": "accessRoleTrigger"
+  },
+  "role_access_kick": {
+    "controller": "Role",
+    "action": "accessRoleKick"
+  },
+  "role_access_ban": {
+    "controller": "Role",
+    "action": "accessRoleBan"
+  },
+  "role_access_pred": {
+    "controller": "Role",
+    "action": "accessRolePred"
+  },
+  "role_access_message_peer": {
+    "controller": "Role",
+    "action": "accessRoleMessagePeer"
+  },
+  "role_access_role_editor": {
+    "controller": "Role",
+    "action": "accessRoleEditorRole"
+  },
+  "role_access_mute": {
+    "controller": "Role",
+    "action": "accessRoleMute"
+  },
+  "role_access_immune": {
+    "controller": "Role",
+    "action": "accessRoleImmune"
+  },
+  "role_access_end": {
+    "controller": "Role",
+    "action": "accessRoleEnd"
+  },
+  "create_web": {
+    "controller": "Web",
+    "action": "create"
+  },
+  "edit_web": {
+    "controller": "Web",
+    "action": "edit"
+  },
+  "web_delete": {
+    "controller": "Web",
+    "action": "delete"
+  },
+  "web_title": {
+    "controller": "Web",
+    "action": "title"
+  },
+  "web_add_admin": {
+    "controller": "Web",
+    "action": "addAdmin"
+  },
+  "web_del_admin": {
+    "controller": "Web",
+    "action": "delAdmin"
+  }
+}

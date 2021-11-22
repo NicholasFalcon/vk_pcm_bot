@@ -1,0 +1,19 @@
+version: "3.1"
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    ports:
+      - "3306:3306"
+  php:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    volumes:
+      - .:/opt/pcm_bot
+    links:
+      - db
+    ports:
+      - "9909:9909"

@@ -1,0 +1,11 @@
+/vendor/
+/.idea/
+/config/server.txt
+/config/api.json
+/config/db.json
+/composer.lock
+/longpoll.log
+/main_log.log
+/register_token_user.php
+/test.php
+/config/ts.data

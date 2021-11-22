@@ -1,0 +1,92 @@
+{
+  "1": {
+    "name": "kick_leavers",
+    "title": "Кикать вышедших пользователей?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "2": {
+    "name": "use_triggers",
+    "title": "Отключить триггеры?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "3": {
+    "name": "number_warn",
+    "title": "Количество предов",
+    "default": "3",
+    "type": "int"
+  },
+  "4": {
+    "name": "time_kick",
+    "title": "Кик неактива через (дней):",
+    "default": "7",
+    "type": "int"
+  },
+  "5": {
+    "name": "kick_inactive",
+    "title": "Кикать неактив?",
+    "default": "1",
+    "type": "boolean"
+  },
+  "6": {
+    "name": "kick_url",
+    "title": "Кикать за ссылки?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "7": {
+    "name": "kick_invite",
+    "title": "Кикать за ссылки на беседы?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "8": {
+    "name": "kick_spam",
+    "title": "Кикать за спам (4 сообщения)?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "9": {
+    "name": "kick_group",
+    "title": "Кикать сообщества?",
+    "default": "1",
+    "type": "boolean"
+  },
+  "10": {
+    "name": "Attention",
+    "title": "Сколько раз в день можно созвать всех?",
+    "default": "2",
+    "type": "int"
+  },
+  "11": {
+    "name": "KickGroup",
+    "title": "Можно ли кикать сообщества?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "12": {
+    "name": "ColorButton",
+    "title": "Цвет всех кнопок? (1 зелёный, 2 красный, 3 белый, 4 синий)",
+    "default": "1",
+    "type": "int"
+  },
+  "13": {
+    "name": "HelloMessage",
+    "title": "Включить приветствие?",
+    "default": "1",
+    "type": "boolean"
+  },
+  "14": {
+    "name": "Rules",
+    "title": "Писать правила вместе с приветствием?",
+    "default": "0",
+    "type": "boolean"
+  },
+  "15": {
+    "name": "MessagesPeer",
+    "title": "Принимать сообщения от других бесед?",
+    "default": "1",
+    "type": "boolean"
+  }
+}

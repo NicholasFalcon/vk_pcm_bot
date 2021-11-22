@@ -1,0 +1,1342 @@
+{
+  "разрабы": {
+    "controller": "control\\Dev",
+    "action": "devs"
+  },
+  "подтверждаю": {
+    "controller": "control\\Accept",
+    "action": "index"
+  },
+  "отказываюсь": {
+    "controller": "control\\Decline",
+    "action": "index"
+  },
+  "подтверждения": {
+    "controller": "control\\Accept",
+    "action": "list"
+  },
+  "+баг": {
+    "controller": "control\\Dev",
+    "action": "addBug"
+  },
+  "баги": {
+    "controller": "control\\Dev",
+    "action": "bugList"
+  },
+  "add": {
+    "controller": "control\\User",
+    "action": "addWords"
+  },
+  "тест": {
+    "controller": "control\\User",
+    "action": "test"
+  },
+  "слово": {
+    "*": {
+      "controller": "control\\User",
+      "action": "NeedWord"
+    }
+  },
+  "игра": {
+    "инициализация": {
+      "controller": "fun\\Games",
+      "action": "initGamePeer"
+    },
+    "старт": {
+      "controller": "fun\\Games",
+      "action": "startGame"
+    },
+    "стоп": {
+      "controller": "fun\\Games",
+      "action": "stopGame"
+    },
+    "виселица": {
+      "controller": "fun\\Games",
+      "action": "Gallows"
+    },
+    "загадки": {
+      "controller": "fun\\Games",
+      "action": "Riddles"
+    }
+  },
+  "дуэль": {
+    "controller": "fun\\Games",
+    "action": "Duel"
+  },
+  "махыч": {
+    "controller": "fun\\Games",
+    "action": "duelGo"
+  },
+  "сцу": {
+    "controller": "fun\\Games",
+    "action": "duelFalse"
+  },
+  "выстрелить": {
+    "controller": "fun\\Games",
+    "action": "shoot"
+  },
+  "выстрел": {
+    "в": {
+      "воздух": {
+        "controller": "fun\\Games",
+        "action": "shootInAir"
+      }
+    }
+  },
+  "создание": {
+    "героя": {
+      "controller": "fun\\MmoRPG",
+      "action": "setHero"
+    }
+  },
+  "живой": {
+    "природы": {
+      "controller": "fun\\MmoRPG",
+      "action": "WildLife"
+    }
+  },
+  "кровавого": {
+    "пера": {
+      "controller": "fun\\MmoRPG",
+      "action": "BloodFeather"
+    }
+  },
+  "ночных": {
+    "теней": {
+      "controller": "fun\\MmoRPG",
+      "action": "NightShadows"
+    }
+  },
+  "цветущих": {
+    "роз": {
+      "controller": "fun\\MmoRPG",
+      "action": "BloomingRoses"
+    }
+  },
+  "рейды": {
+    "controller": "fun\\MmoRPG",
+    "action": "Raids"
+  },
+  "атака": {
+    "controller": "fun\\MmoRPG",
+    "action": "Attacks"
+  },
+  "защита": {
+    "controller": "fun\\MmoRPG",
+    "action": "Defense"
+  },
+  "банда": {
+    "controller": "fun\\MmoRPG",
+    "action": "TheGang"
+  },
+  "николаич": {
+    "controller": "fun\\MmoRPG",
+    "action": "Shops"
+  },
+  "чёрный": {
+    "рынок": {
+      "controller": "fun\\MmoRPG",
+      "action": "Auction"
+    }
+  },
+  "верстак": {
+    "controller": "fun\\MmoRPG",
+    "action": "Crafting"
+  },
+  "мега": {
+    "тайничок": {
+      "controller": "fun\\MmoRPG",
+      "action": "Stoke"
+    }
+  },
+  "лес": {
+    "controller": "fun\\MmoRPG",
+    "action": "Forest"
+  },
+  "мегаполис": {
+    "controller": "fun\\MmoRPG",
+    "action": "Megapolis"
+  },
+  "засада": {
+    "controller": "fun\\MmoRPG",
+    "action": "Ambush"
+  },
+  "уборочка": {
+    "controller": "fun\\MmoRPG",
+    "action": "Cleaning"
+  },
+  "арена": {
+    "controller": "fun\\MmoRPG",
+    "action": "Fighting"
+  },
+  "герой": {
+    "controller": "fun\\MmoRPG",
+    "action": "getMyHero"
+  },
+  "повышение": {
+    "controller": "fun\\MmoRPG",
+    "action": "LevelUp"
+  },
+  "создать": {
+    "клан": {
+      "controller": "fun\\ClanAndHero",
+      "action": "createClan"
+    }
+  },
+  "удалить": {
+    "клан": {
+      "controller": "fun\\ClanAndHero",
+      "action": "removeClan"
+    }
+  },
+  "пригласить": {
+    "в": {
+      "клан": {
+        "controller": "fun\\ClanAndHero",
+        "action": "joinClan"
+      }
+    }
+  },
+  "выйти": {
+    "из": {
+      "клана": {
+        "controller": "fun\\ClanAndHero",
+        "action": "leaveClan"
+      }
+    }
+  },
+  "участники": {
+    "клана": {
+      "controller": "fun\\ClanAndHero",
+      "action": "allMemberByClan"
+    }
+  },
+  "поднять": {
+    "уровень": {
+      "клана": {
+        "controller": "fun\\ClanAndHero",
+        "action": "levelUpClan"
+      }
+    }
+  },
+  "клан": {
+    "значок": {
+      "controller": "fun\\ClanAndHero",
+      "action": "clanPin"
+    },
+    "кик": {
+      "controller": "fun\\ClanAndHero",
+      "action": "kickUser"
+    },
+    "название": {
+      "controller": "fun\\ClanAndHero",
+      "action": "setTitle"
+    },
+    "мой": {
+      "controller": "fun\\ClanAndHero",
+      "action": "myClan"
+    }
+  },
+  "ники": {
+    "controller": "control\\User",
+    "action": "GetNick"
+  },
+  "ник": {
+    "*": {
+      "controller": "control\\User",
+      "action": "nick"
+    }
+  },
+  "инфа": {
+    "controller": "control\\User",
+    "action": "types"
+  },
+  "найди": {
+    "controller": "control\\User",
+    "action": "Search"
+  },
+  "/t": {
+    "controller": "control\\User",
+    "action": "translate"
+  },
+  "техподдержка": {
+    "controller": "control\\User",
+    "action": "TP"
+  },
+  "кто": {
+    "я": {
+      "controller": "control\\User",
+      "action": "getMy"
+    },
+    "судьи": {
+      "controller": "control\\Admin",
+      "action": "getAdmins"
+    },
+    "пригласил": {
+      "": {
+        "controller": "control\\Admin",
+        "action": "invitedBy"
+      },
+      "*": {
+        "controller": "control\\Admin",
+        "action": "invitedBy"
+      }
+    }
+  },
+  "профиль": {
+    "*": {
+      "controller": "control\\User",
+      "action": "get"
+    },
+    "": {
+      "controller": "control\\User",
+      "action": "getReply"
+    },
+    "мой": {
+      "controller": "control\\User",
+      "action": "getMy"
+    }
+  },
+  "значок": {
+    "*": {
+      "controller": "control\\User",
+      "action": "pin"
+    }
+  },
+  "бот": {
+    "-увед": {
+      "controller": "control\\User",
+      "action": "shutUp"
+    },
+    "увед": {
+      "controller": "control\\User",
+      "action": "callMe"
+    }
+  },
+  "действия": {
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    }
+  },
+  "пинг": {
+    "controller": "control\\Admin",
+    "action": "ping"
+  },
+  "кол-во": {
+    "предов": {
+      "controller": "control\\Admin",
+      "action": "SettingStatus"
+    }
+  },
+  "кланы": {
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    }
+  },
+  "админка": {
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    }
+  },
+  "пред": {
+    "со": {
+      "статуса": {
+        "controller": "control\\Admin",
+        "action": "SettingStatus"
+      }
+    },
+    "*": {
+      "controller": "control\\Admin",
+      "action": "warning"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "warning"
+    }
+  },
+  "команды": {
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    }
+  },
+  "-бан": {
+    "controller": "control\\Admin",
+    "action": "removeBan"
+  },
+  "мут": {
+    "controller": "control\\Admin",
+    "action": "muteUser"
+  },
+  "-мут": {
+    "controller": "control\\Admin",
+    "action": "removeMuteUser"
+  },
+  "молчуны": {
+    "controller": "control\\Admin",
+    "action": "sleepers"
+  },
+  "понизить": {
+    "controller": "control\\Admin",
+    "action": "setStatusLow"
+  },
+  "повысить": {
+    "controller": "control\\Admin",
+    "action": "setStatusUp"
+  },
+  "разжаловать": {
+    "controller": "control\\Admin",
+    "action": "setStatusZero"
+  },
+  "админ": {
+    "статус": {
+      "controller": "control\\Admin",
+      "action": "setStatus"
+    }
+  },
+  "кого": {
+    "нет": {
+      "controller": "control\\Admin",
+      "action": "findAdminsByWeb"
+    }
+  },
+  "онлайн": {
+    "controller": "control\\Admin",
+    "action": "getOnline"
+  },
+  "добавь": {
+    "controller": "control\\Admin",
+    "action": "AddAdmin"
+  },
+  "название": {
+    "статуса": {
+      "": {
+        "controller": "control\\Admin",
+        "action": "SetNameStatus"
+      },
+      "*": {
+        "controller": "control\\Admin",
+        "action": "SetNameStatus"
+      }
+    },
+    "статусов": {
+      "controller": "control\\Admin",
+      "action": "StatusName"
+    }
+  },
+  "статусы": {
+    "controller": "control\\Admin",
+    "action": "getAdmins"
+  },
+  "админы": {
+    "беседы": {
+      "controller": "control\\Admin",
+      "action": "getAdmins"
+    }
+  },
+  "правила": {
+    "установить": {
+      "controller": "control\\Admin",
+      "action": "RulesSet"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "Rules"
+    },
+    "удалить": {
+      "controller": "control\\Admin",
+      "action": "RulesSetZero"
+    }
+  },
+  "приветствие": {
+    "установить": {
+      "controller": "control\\Admin",
+      "action": "HelloMessageSet"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "HelloMessage"
+    },
+    "удалить": {
+      "controller": "control\\Admin",
+      "action": "HelloMessageSetZero"
+    }
+  },
+  "чатссылка": {
+    "controller": "control\\Admin",
+    "action": "chatUrl"
+  },
+  "кик": {
+    "со": {
+      "статуса": {
+        "controller": "control\\Admin",
+        "action": "SettingStatus"
+      }
+    },
+    "*": {
+      "controller": "control\\Admin",
+      "action": "kick"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "kick"
+    },
+    "собак": {
+      "controller": "control\\Admin",
+      "action": "KickDeactivated"
+    },
+    "вышедших": {
+      "controller": "control\\Admin",
+      "action": "KickLeavers"
+    }
+  },
+  "модуль": {
+    "controller": "control\\Admin",
+    "action": "Module"
+  },
+  "участник": {
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    }
+  },
+  "назад": {
+    "controller": "control\\Admin",
+    "action": "Module"
+  },
+  "бан": {
+    "со": {
+      "статуса": {
+        "controller": "control\\Admin",
+        "action": "SettingStatus"
+      }
+    },
+    "*": {
+      "controller": "control\\Admin",
+      "action": "ban"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "ban"
+    },
+    "лист": {
+      "controller": "control\\Admin",
+      "action": "BanList"
+    }
+  },
+  "-пред": {
+    "controller": "control\\Admin",
+    "action": "removeWarning"
+  },
+  "гс": {
+    "controller": "control\\User",
+    "action": "AudioMes"
+  },
+  "тотал": {
+    "controller": "control\\Admin",
+    "action": "Total"
+  },
+  "-тотал": {
+    "controller": "control\\Admin",
+    "action": "removeTotal"
+  },
+  "преды": {
+    "controller": "control\\Admin",
+    "action": "allWarning"
+  },
+  "глобан": {
+    "controller": "control\\Web",
+    "action": "globan"
+  },
+  "глобальное": {
+    "сообщение": {
+      "controller": "control\\Web",
+      "action": "sendGlomessage"
+    }
+  },
+  "-глобан": {
+    "controller": "control\\Web",
+    "action": "removeGloban"
+  },
+  "триггер": {
+    "создать": {
+      "controller": "control\\Trigger",
+      "action": "create"
+    },
+    "удалить": {
+      "controller": "control\\Trigger",
+      "action": "delete"
+    }
+  },
+  "неактив": {
+    "кик": {
+      "controller": "control\\Peer",
+      "action": "KickInactive"
+    },
+    "": {
+      "controller": "control\\User",
+      "action": "getInactive"
+    }
+  },
+  "+автокик": {
+    "controller": "control\\Peer",
+    "action": "autokickOn"
+  },
+  "-автокик": {
+    "controller": "control\\Peer",
+    "action": "autokickOff"
+  },
+  "зал": {
+    "славы": {
+      "controller": "control\\Top",
+      "action": "HallGlory"
+    }
+  },
+  "беседа": {
+    "мут": {
+      "controller": "control\\Admin",
+      "action": "MutePeer"
+    },
+    "-мут": {
+      "controller": "control\\Admin",
+      "action": "MutePeerRemove"
+    },
+    "инфо": {
+      "controller": "control\\Admin",
+      "action": "ChatInfo"
+    },
+    "": {
+      "controller": "control\\Admin",
+      "action": "Module"
+    },
+    "инициализация": {
+      "controller": "control\\Peer",
+      "action": "init"
+    },
+    "обновить": {
+      "controller": "control\\Peer",
+      "action": "update"
+    },
+    "настройки": {
+      "controller": "control\\Peer",
+      "action": "getSettings"
+    },
+    "настройка": {
+      "controller": "control\\Settings",
+      "action": "change"
+    },
+    "поиск": {
+      "controller": "control\\Peer",
+      "action": "search"
+    }
+  },
+  "созвать": {
+    "всех": {
+      "controller": "control\\Peer",
+      "action": "attention"
+    },
+    "онлайн": {
+      "controller": "control\\Peer",
+      "action": "getOnline"
+    }
+  },
+  "сетка": {
+    "обновить": {
+      "controller": "control\\Peer",
+      "action": "UpdateWeb"
+    },
+    "инфо": {
+      "controller": "control\\Web",
+      "action": "WebInfo"
+    },
+    "": {
+      "controller": "control\\Web",
+      "action": "get"
+    },
+    "текущая": {
+      "controller": "control\\Web",
+      "action": "checkWeb"
+    },
+    "список": {
+      "controller": "control\\Web",
+      "action": "listWeb"
+    },
+    "создать": {
+      "controller": "control\\Web",
+      "action": "createWeb"
+    },
+    "привязать": {
+      "controller": "control\\Web",
+      "action": "peerAddWeb"
+    },
+    "отвязать": {
+      "controller": "control\\Web",
+      "action": "withdraw"
+    },
+    "настройки": {
+      "controller": "control\\Web",
+      "action": "webSettings"
+    },
+    "настройка": {
+      "controller": "control\\Web",
+      "action": "webChangeSetting"
+    },
+    "удалить": {
+      "controller": "control\\Web",
+      "action": "delete"
+    },
+    "беседы": {
+      "controller": "control\\Web",
+      "action": "peerList"
+    },
+    "топ": {
+      "*": {
+        "controller": "control\\Web",
+        "action": "all"
+      },
+      "": {
+        "controller": "control\\Web",
+        "action": "all"
+      },
+      "дня": {
+        "controller": "control\\Web",
+        "action": "day"
+      },
+      "недели": {
+        "controller": "control\\Web",
+        "action": "week"
+      },
+      "бесед": {
+        "*": {
+          "controller": "control\\Web",
+          "action": "peerAll"
+        },
+        "дня": {
+          "controller": "control\\Web",
+          "action": "peerDay"
+        },
+        "": {
+          "controller": "control\\Web",
+          "action": "peerAll"
+        },
+        "недели": {
+          "controller": "control\\Web",
+          "action": "peerWeek"
+        }
+      }
+    }
+  },
+  "триггеры": {
+    "controller": "control\\Trigger",
+    "action": "allTrigger"
+  },
+  "игры": {
+    "controller": "control\\Admin",
+    "action": "Module"
+  },
+  "топ": {
+    "уровней": {
+      "controller": "control\\Top",
+      "action": "LevelUsers"
+    },
+    "": {
+      "controller": "control\\Top",
+      "action": "all"
+    },
+    "дня": {
+      "controller": "control\\Top",
+      "action": "day"
+    },
+    "недели": {
+      "controller": "control\\Top",
+      "action": "week"
+    },
+    "кланов": {
+      "controller": "fun\\ClanAndHero",
+      "action": "AllClan"
+    }
+  },
+  "chat_invite_user": {
+    "controller": "control\\GlobalAction",
+    "action": "inviteUser"
+  },
+  "chat_invite_user_by_link": {
+    "controller": "control\\GlobalAction",
+    "action": "inviteUser"
+  },
+  "chat_kick_user": {
+    "controller": "control\\GlobalAction",
+    "action": "leaveUser"
+  },
+  "помощь": {
+    "controller": "control\\GlobalAction",
+    "action": "help"
+  },
+  "закопать": {
+    "controller": "control\\RpCommand",
+    "action": "bury"
+  },
+  "застрелить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "shoot"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "beat"
+    }
+  },
+  "обнять": {
+    "controller": "control\\RpCommand",
+    "action": "hug"
+  },
+  "ударить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "beat"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "beat"
+    }
+  },
+  "уебать": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "superBeat"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "beat"
+    }
+  },
+  "поцеловать": {
+    "controller": "control\\RpCommand",
+    "action": "kiss"
+  },
+  "кусь": {
+    "controller": "control\\RpCommand",
+    "action": "kus"
+  },
+  "пихать": {
+    "controller": "control\\RpCommand",
+    "action": "shove"
+  },
+  "дать": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "give"
+    }
+  },
+  "подарить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "give"
+    }
+  },
+  "продать": {
+    "controller": "control\\RpCommand",
+    "action": "sell"
+  },
+  "услышать": {
+    "controller": "control\\RpCommand",
+    "action": "listen"
+  },
+  "пощекотать": {
+    "controller": "control\\RpCommand",
+    "action": "tickle"
+  },
+  "защекотать": {
+    "controller": "control\\RpCommand",
+    "action": "tickle"
+  },
+  "отдать": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "pay"
+    }
+  },
+  "украсть": {
+    "controller": "control\\RpCommand",
+    "action": "steal"
+  },
+  "пиздануть": {
+    "controller": "control\\RpCommand",
+    "action": "SuperKick"
+  },
+  "укусить": {
+    "controller": "control\\RpCommand",
+    "action": "SuperKus"
+  },
+  "трахнуть": {
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "sex"
+    },
+    "всех": {
+      "controller": "control\\RpCommand",
+      "action": "sexAll"
+    }
+  },
+  "расстрелять": {
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "Shoots"
+    },
+    "всех": {
+      "controller": "control\\RpCommand",
+      "action": "ShootsAll"
+    }
+  },
+  "изнасиловать": {
+    "controller": "control\\RpCommand",
+    "action": "SuperSex"
+  },
+  "одеть": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "dress"
+    }
+  },
+  "надеть": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "don"
+    }
+  },
+  "забрать": {
+    "controller": "control\\RpCommand",
+    "action": "take"
+  },
+  "убить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "kill"
+    },
+    "всех": {
+      "controller": "control\\RpCommand",
+      "action": "killALl"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "kill"
+    }
+  },
+  "полапать": {
+    "controller": "control\\RpCommand",
+    "action": "touch"
+  },
+  "раздеть": {
+    "controller": "control\\RpCommand",
+    "action": "undress"
+  },
+  "выебать": {
+    "controller": "control\\RpCommand",
+    "action": "SuperSexi"
+  },
+  "чмокнуть": {
+    "controller": "control\\RpCommand",
+    "action": "LowKiss"
+  },
+  "чпокнуть": {
+    "controller": "control\\RpCommand",
+    "action": "Trah"
+  },
+  "отравить": {
+    "controller": "control\\RpCommand",
+    "action": "toxic"
+  },
+  "сжечь": {
+    "всех": {
+      "controller": "control\\RpCommand",
+      "action": "burnAll"
+    }
+  },
+  "связать": {
+    "controller": "control\\RpCommand",
+    "action": "bind"
+  },
+  "заткнуть": {
+    "controller": "control\\RpCommand",
+    "action": "gag"
+  },
+  "отшлепать": {
+    "controller": "control\\RpCommand",
+    "action": "slap"
+  },
+  "шлепнуть": {
+    "controller": "control\\RpCommand",
+    "action": "slap"
+  },
+  "засосать": {
+    "controller": "control\\RpCommand",
+    "action": "superKiss"
+  },
+  "послать": {
+    "controller": "control\\RpCommand",
+    "action": "send"
+  },
+  "воскресить": {
+    "controller": "control\\RpCommand",
+    "action": "resurrect"
+  },
+  "отсосать": {
+    "controller": "control\\RpCommand",
+    "action": "suck"
+  },
+  "отлизать": {
+    "controller": "control\\RpCommand",
+    "action": "lick"
+  },
+  "арестовать": {
+    "всех": {
+      "controller": "control\\RpCommand",
+      "action": "bustAll"
+    }
+  },
+  "посадить": {
+    "controller": "control\\RpCommand",
+    "action": "plant"
+  },
+  "спрятать": {
+    "controller": "control\\RpCommand",
+    "action": "hide"
+  },
+  "одеться": {
+    "controller": "control\\RpCommand",
+    "action": "dressed"
+  },
+  "унести": {
+    "controller": "control\\RpCommand",
+    "action": "carry"
+  },
+  "тыкнуть": {
+    "controller": "control\\RpCommand",
+    "action": "poke"
+  },
+  "ущипнуть": {
+    "controller": "control\\RpCommand",
+    "action": "pinch"
+  },
+  "позвать": {
+    "controller": "control\\RpCommand",
+    "action": "invite"
+  },
+  "пристегнуть": {
+    "controller": "control\\RpCommand",
+    "action": "fasten"
+  },
+  "задушить": {
+    "controller": "control\\RpCommand",
+    "action": "strangle"
+  },
+  "покормить": {
+    "controller": "control\\RpCommand",
+    "action": "eating"
+  },
+  "погладить": {
+    "controller": "control\\RpCommand",
+    "action": "stroke"
+  },
+  "утопить": {
+    "controller": "control\\RpCommand",
+    "action": "drown"
+  },
+  "кинуть": {
+    "controller": "control\\RpCommand",
+    "action": "throw"
+  },
+  "пнуть": {
+    "controller": "control\\RpCommand",
+    "action": "punch"
+  },
+  "потискать": {
+    "controller": "control\\RpCommand",
+    "action": "cuddle"
+  },
+  "взять": {
+    "controller": "control\\RpCommand",
+    "action": "have"
+  },
+  "плюнуть": {
+    "controller": "control\\RpCommand",
+    "action": "spit"
+  },
+  "кастрировать": {
+    "controller": "control\\RpCommand",
+    "action": "castrate"
+  },
+  "позвонить": {
+    "controller": "control\\RpCommand",
+    "action": "call"
+  },
+  "согреть": {
+    "controller": "control\\RpCommand",
+    "action": "warm"
+  },
+  "облизать": {
+    "controller": "control\\RpCommand",
+    "action": "superLick"
+  },
+  "суицид": {
+    "controller": "control\\RpCommand",
+    "action": "suicide"
+  },
+  "выпить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "drink"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "drink"
+    }
+  },
+  "кончить": {
+    "controller": "control\\RpCommand",
+    "action": "kaifReady"
+  },
+  "поиграть": {
+    "controller": "control\\RpCommand",
+    "action": "game"
+  },
+  "спать": {
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "sleep"
+    }
+  },
+  "убежать": {
+    "controller": "control\\RpCommand",
+    "action": "run"
+  },
+  "скушать": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "eat"
+    }
+  },
+  "загрустить": {
+    "controller": "control\\RpCommand",
+    "action": "sad"
+  },
+  "обидеться": {
+    "controller": "control\\RpCommand",
+    "action": "hurt"
+  },
+  "воскреснуть": {
+    "controller": "control\\RpCommand",
+    "action": "rise"
+  },
+  "завести": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "get"
+    }
+  },
+  "отрастить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "grow"
+    }
+  },
+  "приготовить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "cock"
+    }
+  },
+  "разбить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "smash"
+    }
+  },
+  "покурить": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "smoke"
+    }
+  },
+  "станцевать": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "dance"
+    },
+    "": {
+      "controller": "control\\RpCommand",
+      "action": "dance"
+    }
+  },
+  "наблюдать": {
+    "controller": "control\\RpCommand",
+    "action": "look"
+  },
+  "подрочить": {
+    "controller": "control\\RpCommand",
+    "action": "kaif"
+  },
+  "спрятаться": {
+    "*": {
+      "controller": "control\\RpCommand",
+      "action": "shelter"
+    }
+  },
+  "утонуть": {
+    "controller": "control\\RpCommand",
+    "action": "drowns"
+  },
+  "сброситься": {
+    "controller": "control\\RpCommand",
+    "action": "fold"
+  },
+  "умереть": {
+    "controller": "control\\RpCommand",
+    "action": "die"
+  },
+  "вылечить": {
+    "controller": "control\\RpCommand",
+    "action": "help"
+  },
+  "мой": {
+    "брак": {
+      "controller": "control\\Wedding",
+      "action": "weddingGet"
+    }
+  },
+  "да": {
+    "controller": "control\\Wedding",
+    "action": "AnswerKidYes"
+  },
+  "нет": {
+    "controller": "control\\Wedding",
+    "action": "AnswerKidNo"
+  },
+  "брак": {
+    "controller": "control\\Wedding",
+    "action": "wedding"
+  },
+  "мои": {
+    "дети": {
+      "controller": "control\\Wedding",
+      "action": "GetKids"
+    },
+    "родители": {
+      "controller": "control\\Wedding",
+      "action": "GetParent"
+    }
+  },
+  "усыновить": {
+    "controller": "control\\Wedding",
+    "action": "SetKids"
+  },
+  "удочерить": {
+    "controller": "control\\Wedding",
+    "action": "SetKids"
+  },
+  "уйти": {
+    "в": {
+      "детдом": {
+        "controller": "control\\Wedding",
+        "action": "FreeChild"
+      }
+    }
+  },
+  "-брак": {
+    "controller": "control\\Wedding",
+    "action": "removeWedding"
+  },
+  "не": {
+    "согласен": {
+      "controller": "control\\Wedding",
+      "action": "weddingNo"
+    }
+  },
+  "согласен": {
+    "controller": "control\\Wedding",
+    "action": "weddingYes"
+  },
+  "браки": {
+    "controller": "control\\Wedding",
+    "action": "weddingAll"
+  },
+  "добавить": {
+    "маршрут": {
+      "controller": "DiplomAnton\\Route",
+      "action": "insertRoute"
+    },
+    "станцию": {
+      "controller": "DiplomAnton\\Station",
+      "action": "insertStation"
+    },
+    "переход": {
+      "controller": "DiplomAnton\\Transition",
+      "action": "insertTransition"
+    }
+  },
+  "поиск": {
+    "controller": "DiplomAnton\\Route",
+    "action": "selectRouteUser"
+  },
+  "погода": {
+    "controller": "fun\\Fun",
+    "action": "Weather"
+  },
+  "написать": {
+    "controller": "fun\\Fun",
+    "action": "sendMes"
+  },
+  "беседы": {
+    "controller": "fun\\Fun",
+    "action": "Peers"
+  },
+  "новости": {
+    "controller": "fun\\Fun",
+    "action": "news"
+  },
+  "шипперим": {
+    "controller": "fun\\Fun",
+    "action": "ShipShip"
+  },
+  "биржа": {
+    "controller": "fun\\Fun",
+    "action": "stockMarket"
+  },
+  "город": {
+    "поменять": {
+      "controller": "DiplomAnton\\Route",
+      "action": "updateCountryByUser"
+    },
+    "*": {
+      "controller": "DiplomAnton\\Route",
+      "action": "updateCountryByUser"
+    }
+  },
+  "роль": {
+    "controller": "control\\Admin",
+    "action": "editRole"
+  },
+  "edit_user_role": {
+    "controller": "control\\Admin",
+    "action": "changeUserRole"
+  },
+  "profile": {
+    "controller": "control\\User",
+    "action": "getMy"
+  },
+  "web_connect": {
+    "controller": "control\\Web",
+    "action": "connect"
+  },
+  "web_disconnect": {
+    "controller": "control\\Web",
+    "action": "disconnect"
+  },
+  "web_add_peer": {
+    "controller": "control\\Web",
+    "action": "peerAddWeb"
+  }
+}

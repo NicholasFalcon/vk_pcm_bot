@@ -1,0 +1,34 @@
+{
+  "1": {
+    "name": "trigger_editor_access",
+    "title": "Управление триггерами"
+  },
+  "2": {
+    "name": "kick_access",
+    "title": "Удаление пользователей"
+  },
+  "3": {
+    "name": "ban_access",
+    "title": "Блокировка пользователей"
+  },
+  "4": {
+    "name": "pred_access",
+    "title": "Выдача предупреждений пользователям"
+  },
+  "5": {
+    "name": "peer_message_access",
+    "title": "Общение между беседами"
+  },
+  "6": {
+    "name": "role_editor",
+    "title": "Изменение роли участников"
+  },
+  "7": {
+    "name": "mute_access",
+    "title": "Заглушение пользователей"
+  },
+  "8": {
+    "name": "immune_access",
+    "title": "Иммунитет к командам"
+  }
+}

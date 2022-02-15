@@ -13,6 +13,8 @@ services:
       dockerfile: php.Dockerfile
     volumes:
       - .:/opt/pcm_bot
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
     links:
       - db
     ports:

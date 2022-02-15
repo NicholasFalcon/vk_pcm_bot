@@ -308,6 +308,7 @@ class MmoRPGController extends Controller
                 $this->vk->messagesSend($this->peer->id, "Ты уже чем-то занят.");
         } else
             $this->vk->messagesSend($this->peer->id, "Вы ушли в рейд в лес...");
+        return $response;
     }
 
     public function MegapolisAction()

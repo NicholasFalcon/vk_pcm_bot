@@ -8,4 +8,4 @@ ENV MARIADB_PASSWORD 1234
 ENV MARIADB_DATABASE pcm_bot
 ENV LANG ru_RU.utf8
 
-ADD pcm_bot.sql /docker-entrypoint-initdb.d
+ADD .docker/pcm_bot.sql /docker-entrypoint-initdb.d

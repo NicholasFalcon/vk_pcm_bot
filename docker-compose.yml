@@ -4,18 +4,16 @@ services:
   db:
     build:
       context: .
-      dockerfile: db.Dockerfile
+      dockerfile: .docker/db.Dockerfile
     ports:
       - "3306:3306"
   php:
     build:
       context: .
-      dockerfile: php.Dockerfile
+      dockerfile: .docker/php.Dockerfile
     volumes:
       - .:/opt/pcm_bot
-    environment:
-      PHP_IDE_CONFIG: "serverName=Docker"
     links:
       - db
     ports:
-      - "9909:9909"
+      - "9000:9000"

@@ -1,20 +1,104 @@
-FROM php:7.4-cli
+FROM php:7.4-cli-alpine
 
-# export xdebug config 172.18.0.1
-ENV PHP_IDE_CONFIG="serverName=Docker"
+ARG swoole_ver
 
-COPY .docker/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+ENV SWOOLE_VER=${swoole_ver:-"v4.4.15"}
 
-RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* && localedef -i ru_RU -c -f UTF-8 -A /usr/share/locale/locale.alias ru_RU.UTF-8
+#install some utilities
+RUN set -ex \
+    && cd /tmp \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk update \
+    && apk add vim git autoconf openssl-dev build-base zlib-dev re2c libpng-dev oniguruma-dev
 
+# install composer
+RUN cd /tmp \
+    #Download composer from aliyun
+    && wget https://mirrors.aliyun.com/composer/composer.phar \
+    && chmod u+x composer.phar \
+    && mv composer.phar /usr/local/bin/composer \
+    #Setting aliyun image for composer
+    && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer \
+    #Add the composer global command to the path to ensure that we will use the
+    && echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc
+
+#install php ext
+RUN php -m \
+    && docker-php-ext-install gd pdo pdo_mysql mysqli sockets pcntl \
+    && php -m
+
+#install xdebug
 RUN pecl install xdebug-2.8.1 \
-    && apt-get update && apt-get install -y libpq-dev git \
-    && docker-php-ext-install mysqli pdo pdo_mysql pcntl \
-    && docker-php-ext-enable xdebug mysqli pdo pcntl
+    && docker-php-ext-enable xdebug
+`
+# install swoole
+RUN cd /tmp \
+    # from mirrors
+    && git clone https://gitee.com/swoole/swoole swoole \
+    && cd swoole \
+    #Switch to the specified version of tag
+    && git checkout ${SWOOLE_VER} \
+    && phpize \
+    #Execute the configure command
+    && ./configure --enable-openssl --enable-sockets --enable-http2 --enable-mysqlnd \
+    && make \
+    && make install \
+    #The extension is enabled through docker PHP ext enable, which is also provided by PHP.
+    && docker-php-ext-enable swoole \
+    #Check the modules PHP has installed
+    && php -m \
+    #Check that swoole is installed correctly
+    && php --ri swoole
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# config php
+RUN cd /usr/local/etc/php/conf.d \
+    # swoole config
+    #To turn off the short name of swoole, it is necessary to use hyperf
+    && echo "swoole.use_shortname = off" >> 99-off-swoole-shortname.ini \
+    # config xdebug
+    && { \
+        #Add an Xdebug node
+        echo "[Xdebug]"; \
+        #Enable remote connection
+        echo "xdebug.remote_enable = 1"; \
+        #This is a multi person debugging, but now it's a little difficult, so I won't start it for the time being
+        echo ";xdebug.remote_connect_back = On"; \
+        #Auto start remote debugging
+        echo "xdebug.remote_autostart  = true"; \
+        #Here, the host can fill in the IP address taken previously, or fill in the IP address host.docker.internal  。
+        echo "xdebug.remote_host = host.docker.internal"; \
+        #Here the port is fixed to fill in 19000. Of course, other ports can be filled in. It needs to be ensured that they are not occupied
+        echo "xdebug.remote_port = 19000"; \
+        #Fixed here
+        echo "xdebug.idekey=PHPSTORM"; \
+        #Save execution results to 99 Xdebug- enable.ini  Go inside
+    } | tee 99-xdebug-enable.ini
+
+# install phpredis
+RUN cd /tmp \
+    # from mirrors
+    && git clone https://gitee.com/mirrors/phpredis phpredis \
+    && cd phpredis \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable redis \
+    && php -m \
+    && php --ri redis
+
+# check
+#Check PHP version information and installed modules
+RUN cd /tmp \
+    #Check PHP version
+    && php -v \
+    #Check installed modules
+    && php -m \
+    && echo -e "Build Completed!"
+
+#Exposed 9501 port
+EXPOSE 9501
 
 WORKDIR /opt/pcm_bot
 
-ENTRYPOINT ["php", "pcm_start.php"]
+ENTRYPOINT ["vendor/bin/php-watcher", "pcm_start.php"]

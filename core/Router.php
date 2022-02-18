@@ -52,18 +52,19 @@ class Router
         file_put_contents('config/ts.data', $dataLongPoll['ts']);
         foreach ($dataLongPoll['updates'] as $action)
         {
-            $pid = pcntl_fork();
-            if($pid == -1)
-                echo 'Could not fork';
-            if ($pid) {
-                $this->processes[] = $pid;
-            } else {
-                App::init();
-                $config = file_get_contents('config/api.json');
-                $router = new Router(json_decode($config)->pcm_bot_test);
-                $router->createAction($action);
-                exit();
-            }
+            $this->createAction($action);
+
+//            $pid = pcntl_fork();
+//            if($pid == -1)
+//            echo 'Could not fork';
+//            if ($pid) {
+//                $this->processes[] = $pid;
+//            } else {
+//                App::init();
+//                $config = file_get_contents('config/api.json');
+//                $router = new Router(json_decode($config)->pcm_bot_test);
+//                exit();
+//            }
         }
 
         foreach($this->processes as $key => $pid) {

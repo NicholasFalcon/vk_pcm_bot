@@ -18,7 +18,8 @@
     "ext-mbstring": "*",
     "ext-pdo": "*",
     "ext-pcntl": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "seregazhuk/php-watcher": "v0.5.2"
   },
   "autoload": {
     "psr-4": {

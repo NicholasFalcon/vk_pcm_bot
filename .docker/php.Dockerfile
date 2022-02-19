@@ -2,7 +2,7 @@ FROM php:7.4-cli-alpine
 
 ARG swoole_ver
 
-ENV SWOOLE_VER=${swoole_ver:-"v4.4.15"}
+ENV SWOOLE_VER=${swoole_ver:-"v4.8.7"}
 
 #install some utilities
 RUN set -ex \
@@ -11,16 +11,9 @@ RUN set -ex \
     && apk update \
     && apk add vim git autoconf openssl-dev build-base zlib-dev re2c libpng-dev oniguruma-dev
 
-# install composer
-RUN cd /tmp \
-    #Download composer from aliyun
-    && wget https://mirrors.aliyun.com/composer/composer.phar \
-    && chmod u+x composer.phar \
-    && mv composer.phar /usr/local/bin/composer \
-    #Setting aliyun image for composer
-    && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer \
-    #Add the composer global command to the path to ensure that we will use the
-    && echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 
 #install php ext
 RUN php -m \
@@ -30,7 +23,7 @@ RUN php -m \
 #install xdebug
 RUN pecl install xdebug-2.8.1 \
     && docker-php-ext-enable xdebug
-`
+
 # install swoole
 RUN cd /tmp \
     # from mirrors
@@ -74,19 +67,6 @@ RUN cd /usr/local/etc/php/conf.d \
         #Save execution results to 99 Xdebug- enable.ini  Go inside
     } | tee 99-xdebug-enable.ini
 
-# install phpredis
-RUN cd /tmp \
-    # from mirrors
-    && git clone https://gitee.com/mirrors/phpredis phpredis \
-    && cd phpredis \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && docker-php-ext-enable redis \
-    && php -m \
-    && php --ri redis
-
 # check
 #Check PHP version information and installed modules
 RUN cd /tmp \
@@ -101,4 +81,4 @@ EXPOSE 9501
 
 WORKDIR /opt/pcm_bot
 
-ENTRYPOINT ["vendor/bin/php-watcher", "pcm_start.php"]
+ENTRYPOINT ["php", "pcm_start.php"]

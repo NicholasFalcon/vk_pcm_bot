@@ -12,6 +12,7 @@ use comboModel\UserPeer;
 use controller\control\TriggerController;
 use controller\control\CallbackController;
 use model\Web;
+use Swoole\Process;
 
 class Router
 {
@@ -52,28 +53,24 @@ class Router
         file_put_contents('config/ts.data', $dataLongPoll['ts']);
         foreach ($dataLongPoll['updates'] as $action)
         {
-            $this->createAction($action);
 
-//            $pid = pcntl_fork();
-//            if($pid == -1)
-//            echo 'Could not fork';
-//            if ($pid) {
-//                $this->processes[] = $pid;
-//            } else {
-//                App::init();
-//                $config = file_get_contents('config/api.json');
-//                $router = new Router(json_decode($config)->pcm_bot_test);
-//                exit();
-//            }
+            $router = $this;
+
+            $process = new Process(function (Process $process) use ($router, $action) {
+                try {
+                    $router->createAction($action);
+                }
+                catch (\Exception $e)
+                {
+                    echo $e->getMessage();
+                } finally {
+                    $process->exit();
+                }
+            });
+
+            $process->start();
         }
 
-        foreach($this->processes as $key => $pid) {
-            $res = pcntl_waitpid($pid, $status, WNOHANG);
-
-            // Если процесс уже завершился
-            if($res == -1 || $res > 0)
-                unset($this->processes[$key]);
-        }
         return true;
     }
 

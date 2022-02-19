@@ -14,28 +14,26 @@ use core\Response;
 
 class AdminController extends Controller
 {
-    public function pingAction($user_text, $time_start): Response
+    public function pingAction($time_start): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $start = time() + microtime(1);
-            $this->vk->messagesSend('', '');
-            $res = time() + microtime(1) - $start;
-            $time = time() + microtime(1) - $time_start - $res;
-            $peer1 = Peer::findCountInitPeer();
-            $peer2 = Peer::findCountNotInitPeer();
-            $peers = $peer1 + $peer2;
-            $response->message = "Текущее время на сервере: " . date('G:i:s')
-                . PHP_EOL . "Задержка vk api: " . number_format($res, 2, ',', ' ') . " секунд."
-                . PHP_EOL . "Задержка на сервере: " . number_format($time, 2, ',', ' ') . " секунд."
-                . PHP_EOL . "Число пользователей в беседах: " . User::findCountUsers()
-                . PHP_EOL . "Число инициализированных бесед на данный момент: " . $peer1
-                . PHP_EOL . "Число бесед пустышек: " . $peer2
-                . PHP_EOL . "Число бесед на данный момент: " . $peers;
+        $start = time() + microtime(1);
+        $this->vk->messagesSend('', '');
+        $res = time() + microtime(1) - $start;
+        $time = time() + microtime(1) - $time_start - $res;
+        $peer1 = Peer::findCountInitPeer();
+        $peer2 = Peer::findCountNotInitPeer();
+        $peers = $peer1 + $peer2;
+        $response->message = "Текущее время на сервере: " . date('G:i:s')
+            . PHP_EOL . "Задержка vk api: " . number_format($res, 2, ',', ' ') . " секунд."
+            . PHP_EOL . "Задержка на сервере: " . number_format($time, 2, ',', ' ') . " секунд."
+            . PHP_EOL . "Число пользователей в беседах: " . User::findCountUsers()
+            . PHP_EOL . "Число инициализированных бесед на данный момент: " . $peer1
+            . PHP_EOL . "Число бесед пустышек: " . $peer2
+            . PHP_EOL . "Число бесед на данный момент: " . $peers;
 //                . PHP_EOL . "[hironori|​]"; // тут пустой символ, работающий на упоминание, справа от квадратной скобки закрывающей ставишь и влево один раз и с шифтом второй раз и копируешь
-            $response->setButtonRow(['Профиль мой', "profile"], ['Клан мой', "ping"]);
-        }
+        $response->setButtonRow(['Профиль мой', "profile"], ['Клан мой', "ping"]);
         return $response;
     }
 

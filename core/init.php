@@ -11,3 +11,10 @@ while (!file_exists('vendor/autoload.php'))
 
 include_once 'vendor/autoload.php';
 App::init();
+try {
+    \core\Routing::installRoute('routes');
+}
+catch (Exception $e)
+{
+    echo 'Exception: '.$e->getMessage();
+}

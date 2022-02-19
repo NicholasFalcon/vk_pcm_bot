@@ -19,11 +19,15 @@ class Router
     private Vk $vk;
     private array $processes = [];
     public int $timeStart = 0;
+    private Routing $routing;
+    private Routing $commands;
 
     public function __construct($config)
     {
         $this->vk = new Vk($config->token, $config->version, $config->domain, $config->id);
         App::$group_id = $config->id;
+        $this->routing = new Routing();
+        $this->commands = new Routing('commands');
     }
 
     public function start()
@@ -136,7 +140,7 @@ class Router
                     $userPeer->msg_all = $userPeer->msg_all + 1;
                     $userPeer->last_tst = time();
 
-                    $actionName = false;
+                    $route = false;
                     if (isset($action['object']['message']['payload']) && $action['object']['message']['payload'] != '')
                     {
                         $payload = json_decode($action['object']['message']['payload'], 'true');
@@ -145,14 +149,14 @@ class Router
                             $name = $payload['pcmButtonAction'];
                         elseif (isset($payload['command']))
                             $name = $payload['command'];
-                        $actionName = $this->getAction($name);
+                        $route = $this->commands->check($name);
                     }
-                    if ($actionName === false && isset($action['object']['message']['action']) && isset($action['object']['message']['action']['type']) && $action['object']['message']['action']['type'] != '')
+                    if ($route === false && isset($action['object']['message']['action']) && isset($action['object']['message']['action']['type']) && $action['object']['message']['action']['type'] != '')
                     {
-                        $actionName = $this->getAction($action['object']['message']['action']['type']);
+                        $route = $this->commands->check($action['object']['message']['action']['type']);
                     }
-                    elseif($actionName === false && $action['object']['message']['text'] != '') {
-                        $actionName = $this->getAction($action['object']['message']['text']);
+                    elseif($route === false && $action['object']['message']['text'] != '') {
+                        $route = $this->routing->check($action['object']['message']['text']);
                     }
                     $userPeer->save();
                     if ($peer->MutePeer == 1) {
@@ -190,11 +194,11 @@ class Router
                     /**
                      * @var Controller $controller
                      */
-                    if ($actionName !== false) {
-                        $class = "\\controller\\{$actionName['controller']}Controller";
+                    if ($route !== false) {
+                        $class = $route['class'];
                         if (class_exists($class)) {
                             $controller = new $class($this->vk, $user, $peer, $userPeer);
-                            return $controller->run($actionName['action'], array_merge(["user_text" => $actionName['user_text'] ?? '', 'time_start' => $this->timeStart], $action));
+                            return $controller->run($route['action'], array_merge(['time_start' => $this->timeStart], $action, $route['params']));
                         }
                     } elseif (!$peer->getSetting(App::S_USE_TRIGGERS)) {
                         $controller = new TriggerController($this->vk, $user, $peer, $userPeer);

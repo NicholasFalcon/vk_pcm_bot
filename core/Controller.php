@@ -38,7 +38,7 @@ class Controller
     public function run($action_name, $args = [])
     {
         try {
-            $method = new ReflectionMethod(static::class, $action_name."Action");
+            $method = new ReflectionMethod(static::class, $action_name);
             $sorted_args = [];
             foreach ($method->getParameters() as $parameter) {
                 if (array_key_exists($parameter->getName(), $args)){
@@ -53,7 +53,7 @@ class Controller
                     }
                 }
             }
-            return call_user_func_array([$this, $action_name.'Action'], $sorted_args);
+            return call_user_func_array([$this, $action_name], $sorted_args);
         }
         catch (Exception $e)
         {

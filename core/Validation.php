@@ -3,7 +3,6 @@
 namespace core;
 
 use Exception;
-use function PHPUnit\Framework\throwException;
 
 /**
  * Класс валидации
@@ -18,6 +17,10 @@ class Validation
     protected array $validations = [];
     protected static array $selectors = [];
     protected static array $lengths = [];
+
+    public function __construct()
+    {
+    }
 
     public function setValidation($var_name, ...$property): Validation
     {
@@ -43,7 +46,7 @@ class Validation
         {
             foreach ($this->validations[$var_name] as $property)
             {
-                if($res = call_user_func([$this, 'is_'.$property], $var_name, $value) !== true)
+                if(($res = call_user_func([$this, 'is_'.$property], $var_name, $value)) !== true)
                 {
                     return $res;
                 }

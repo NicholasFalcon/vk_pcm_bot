@@ -19,15 +19,19 @@ class Router
     private Vk $vk;
     private array $processes = [];
     public int $timeStart = 0;
-    private Routing $routing;
-    private Routing $commands;
+    private Routing $routing_peer;
+    private Routing $routing_user;
+    private Routing $commands_peer;
+    private Routing $commands_user;
 
     public function __construct($config)
     {
         $this->vk = new Vk($config->token, $config->version, $config->domain, $config->id);
         App::$group_id = $config->id;
-        $this->routing = new Routing();
-        $this->commands = new Routing('commands');
+        $this->routing_peer = new Routing(Routing::PEER);
+        $this->commands_peer = new Routing(Routing::C_PEER);
+        $this->routing_user = new Routing(Routing::USER);
+        $this->commands_user = new Routing(Routing::C_USER);
     }
 
     public function start()
@@ -149,14 +153,14 @@ class Router
                             $name = $payload['pcmButtonAction'];
                         elseif (isset($payload['command']))
                             $name = $payload['command'];
-                        $route = $this->commands->check($name);
+                        $route = $this->commands_peer->check($name);
                     }
                     if ($route === false && isset($action['object']['message']['action']) && isset($action['object']['message']['action']['type']) && $action['object']['message']['action']['type'] != '')
                     {
-                        $route = $this->commands->check($action['object']['message']['action']['type']);
+                        $route = $this->commands_peer->check($action['object']['message']['action']['type']);
                     }
                     elseif($route === false && $action['object']['message']['text'] != '') {
-                        $route = $this->routing->check($action['object']['message']['text']);
+                        $route = $this->routing_peer->check($action['object']['message']['text']);
                     }
                     $userPeer->save();
                     if ($peer->MutePeer == 1) {
@@ -217,7 +221,7 @@ class Router
                     $userInfo = App::getFullInfoAboutUser($user->id);
                     $user->updateInfo($userInfo);
                 }
-                $actionName = false;
+                $route = false;
                 if (isset($action['object']['message']['payload']) && $action['object']['message']['payload'] != '')
                 {
                     $payload = json_decode($action['object']['message']['payload'], 'true');
@@ -226,10 +230,10 @@ class Router
                         $name = $payload['pcmButtonAction'];
                     elseif (isset($payload['command']))
                         $name = $payload['command'];
-                    $actionName = $this->getAction($name, 'action_user');
+                    $route = $this->commands_user->check($name);
                 }
                 elseif ($action['object']['message']['text'] != '') {
-                    $actionName = $this->getAction($action['object']['message']['text'], 'action_user');
+                    $route = $this->routing_user->check($action['object']['message']['text']);
                 }
                 if($user->user_action != '')
                 {
@@ -250,11 +254,11 @@ class Router
                         return $response;
                     }
                 }
-                if ($actionName !== false) {
-                    $class = "\\controller\\user\\{$actionName['controller']}Controller";
+                if ($route !== false) {
+                    $class = $route['class'];
                     if (class_exists($class)) {
                         $controller = new $class($this->vk, $user, new Peer(), new UserPeer());
-                        return $controller->run($actionName['action'], array_merge(["user_text" => $actionName['user_text'] ?? '', 'time_start' => $this->timeStart], $action));
+                        return $controller->run($route['action'], array_merge(['time_start' => $this->timeStart], $action, $route['params']));
                     }
                 }
             }

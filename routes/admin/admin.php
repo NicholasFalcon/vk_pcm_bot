@@ -1,2 +1,2 @@
 <?php
-\core\Routing::set('пинг', \controller\control\AdminController::class, 'ping');
+\core\Routing::setForPeer('пинг', \controller\control\AdminController::class, 'ping');

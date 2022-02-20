@@ -9,18 +9,23 @@ use Exception;
  */
 class Routing
 {
+    const PEER = 'peer';
+    const USER = 'user';
+    const C_PEER = 'peer_commands';
+    const C_USER = 'user_commands';
+
     protected static string $current_path = '';
     protected static array $routes = [];
+    protected static array $routes_user = [];
     protected static array $commands = [];
+    protected static array $commands_user = [];
     protected string $type = 'default';
     protected array $last_error = [];
 
 
-    public function __construct($type = null)
+    public function __construct($type = 'peer')
     {
-        if (!is_null($type)) {
-            $this->type = 'commands';
-        }
+        $this->type = $type;
     }
 
     /**
@@ -39,10 +44,8 @@ class Routing
         static::$current_path = $save_path;
     }
 
-    public static function set($name, $class, $action, Validation $validation = null)
+    protected static function set(&$routes, $name, $class, $action, Validation $validation = null)
     {
-        $routes = &static::$routes;
-
         if (static::$current_path != '') {
             foreach (explode('&', static::$current_path) as $path) {
                 if (!isset($routes[$path])) {
@@ -66,7 +69,17 @@ class Routing
         }
     }
 
-    public static function setCommands($name, $class, $action)
+    public static function setForPeer($name, $class, $action, Validation $validation = null)
+    {
+        static::set(static::$routes, $name, $class, $action, $validation);
+    }
+
+    public static function setForUser($name, $class, $action, Validation $validation = null)
+    {
+        static::set(static::$routes_user, $name, $class, $action, $validation);
+    }
+
+    protected static function setCommand($commands, $name, $class, $action)
     {
         $command = strtok($name, ' ');
         $pattern = trim(str_replace($name, '', $command));
@@ -77,23 +90,36 @@ class Routing
         ];
     }
 
+    public static function setCommandForPeer($name, $class, $action)
+    {
+        static::setCommand(static::$commands, $name, $class, $action);
+    }
+
+    public static function setCommandForUser($name, $class, $action)
+    {
+        static::setCommand(static::$commands_user, $name, $class, $action);
+    }
+
     public function check($path)
     {
-        if ($this->type == 'default') {
-            return $this->checkDefault($path);
-        } else {
-            return $this->checkCommands($path);
+        if ($this->type == static::PEER) {
+            $routes = static::$routes;
+            return $this->checkRoute($path, $routes);
+        } elseif ($this->type == static::C_PEER) {
+            $commands = static::$commands;
+            return $this->checkCommands($path, $commands);
+        } elseif ($this->type == static::USER) {
+            $routes = static::$routes_user;
+            return $this->checkRoute($path, $routes);
+        } elseif ($this->type == static::C_USER) {
+            $commands = static::$commands_user;
+            return $this->checkCommands($path, $commands);
         }
     }
 
-    /**
-     * @param $path
-     * @return array|false
-     */
-    protected function checkDefault($path)
+    protected function checkRoute($path, $routes)
     {
         $found = false;
-        $routes = static::$routes;
         while (!$found) {
             $group = strtok($path, ' ');
             if (isset($routes[$group])) {
@@ -102,7 +128,7 @@ class Routing
             } else {
                 if (isset($routes['patterns'])) {
                     foreach ($routes['patterns'] as $pattern) {
-                        $res = $this->runDefault($pattern, $path);
+                        $res = $this->runRoute($pattern, $path);
                         if (!isset($res['error'])) {
                             return $res;
                         } else {
@@ -113,14 +139,13 @@ class Routing
                 $found = true;
             }
         }
-        if($this->last_error != [])
-        {
+        if ($this->last_error != []) {
             return $this->last_error;
         }
         return false;
     }
 
-    protected function runDefault($route, $path): array
+    protected function runRoute($route, $path): array
     {
         /**
          * @var Validation $validation
@@ -158,15 +183,13 @@ class Routing
         return $route;
     }
 
-    protected function checkCommands($path)
+    protected function checkCommands($path, $commands)
     {
         $command = strtok($path, ' ');
-        if (isset(static::$commands[$command])) {
-            if(isset(static::$commands[$command]['patterns']))
-            {
-                foreach (static::$commands[$command]['patterns'] as $pattern)
-                {
-                    $res = $this->runCommands(static::$commands[$command], $path);
+        if (isset($commands[$command])) {
+            if (isset($commands[$command]['patterns'])) {
+                foreach ($commands[$command]['patterns'] as $pattern) {
+                    $res = $this->runCommands($commands[$command], $path);
                     if (!isset($res['error'])) {
                         return $res;
                     } else {
@@ -175,14 +198,13 @@ class Routing
                 }
             }
         }
-        if($this->last_error != [])
-        {
+        if ($this->last_error != []) {
             return $this->last_error;
         }
         return false;
     }
 
-    public function runCommands($route, $path)
+    protected function runCommands($route, $path): array
     {
         $pattern = $route['pattern'];
         $params = [];

@@ -1,2 +1,9 @@
 <?php
-\core\Routing::setForPeer('пинг', \controller\control\AdminController::class, 'ping');
+
+use controller\control\AdminController;
+use core\Routing;
+
+Routing::group('кик', function () {
+    Routing::setForPeer(':user_text', AdminController::class, 'kick');
+
+});

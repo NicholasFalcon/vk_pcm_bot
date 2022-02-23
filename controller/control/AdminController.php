@@ -14,29 +14,6 @@ use core\Response;
 
 class AdminController extends Controller
 {
-    public function pingAction($time_start): Response
-    {
-        $response = new Response();
-        $response->peer_id = $this->peer->id;
-        $start = time() + microtime(1);
-        $this->vk->messagesSend('', '');
-        $res = time() + microtime(1) - $start;
-        $time = time() + microtime(1) - $time_start - $res;
-        $peer1 = Peer::findCountInitPeer();
-        $peer2 = Peer::findCountNotInitPeer();
-        $peers = $peer1 + $peer2;
-        $response->message = "Текущее время на сервере: " . date('G:i:s')
-            . PHP_EOL . "Задержка vk api: " . number_format($res, 2, ',', ' ') . " секунд."
-            . PHP_EOL . "Задержка на сервере: " . number_format($time, 2, ',', ' ') . " секунд."
-            . PHP_EOL . "Число пользователей в беседах: " . User::findCountUsers()
-            . PHP_EOL . "Число инициализированных бесед на данный момент: " . $peer1
-            . PHP_EOL . "Число бесед пустышек: " . $peer2
-            . PHP_EOL . "Число бесед на данный момент: " . $peers;
-//                . PHP_EOL . "[hironori|​]"; // тут пустой символ, работающий на упоминание, справа от квадратной скобки закрывающей ставишь и влево один раз и с шифтом второй раз и копируешь
-        $response->setButtonRow(['Профиль мой', "profile"], ['Клан мой', "ping"]);
-        return $response;
-    }
-
     public function editRoleAction($object, $user_text): Response
     {
         $response = new Response();
@@ -156,10 +133,6 @@ class AdminController extends Controller
         $users = UserPeer::SelectUsers($this->peer->id);
         if ($this->user->is_dev == 1 || $web->owner_id == $this->user->id) {
             foreach ($peers as $peer) {
-                $AllUserChat = UserPeer::getAdminsKick($peer['id']);
-                foreach ($AllUserChat as $admin) {
-                    array_push($result, (int)$admin['user_id']);
-                }
                 foreach ($users as $item) {
                     array_push($allUser, $item['user_id']);
                 }
@@ -502,12 +475,7 @@ class AdminController extends Controller
                     $this->peer->users_count = $this->peer->users_count - 1;
                     $this->peer->count_kick = $this->peer->count_kick + 1;
                     $this->peer->save();
-                    $admins = UserPeer::getAdminsKick($this->peer->id);
-                    $message = $this->render('admin/kick_admin', [
-                        'admins' => $admins
-                    ]);
-                    $this->vk->messagesSend($this->peer->id, 'Пользователь забанен в беседе. Если вы не согласны напишите админам: '
-                        . PHP_EOL . $message);
+                    $this->vk->messagesSend($this->peer->id, 'Пользователь забанен в беседе!');
                     $result = $this->vk->messagesRemoveChatUser($this->peer->id, $userPeer->user_id);
                     if (isset($result['error']) && $result['error']['error_code'] == 15) {
                         $response->message = 'Не могу забанить админа';
@@ -548,12 +516,7 @@ class AdminController extends Controller
         if ($this->userPeer->haveAccess(Role::KICK_ACCESS) || $this->user->is_dev == 1) {
             if ($user !== false) {
                 $this->removeUserFromPeer($userPeer);
-                $admins = UserPeer::getAdminsKick($this->peer->id);
-                $message = $this->render('admin/kick_admin', [
-                    'admins' => $admins
-                ]);
-                $this->vk->messagesSend($this->peer->id, 'Пользователь удален из беседы. Если вы не согласны напишите админам: '
-                    . PHP_EOL . $message);
+                $this->vk->messagesSend($this->peer->id, 'Пользователь удален из беседы!');
                 $result = $this->vk->messagesRemoveChatUser($this->peer->id, $userPeer->user_id);
                 if (isset($result['error']) && $result['error']['error_code'] == 15) {
                     $response->message = 'Не могу выгнать админа';

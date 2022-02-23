@@ -26,7 +26,6 @@
     "psr-4": {
       "api\\": "classes/api",
       "modules\\": "classes/modules",
-      "ClickHouseDB\\": "classes/ClickHouseDB",
       "comboModel\\": "comboModel",
       "controller\\control\\": "controller/control",
       "controller\\fun\\": "controller/fun",

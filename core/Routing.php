@@ -102,6 +102,8 @@ class Routing
 
     public function check($path)
     {
+        $id = App::$group_id;
+        $path = mb_strtolower(trim(preg_replace("~\[club$id\|.*]~", '', $path)));
         if ($this->type == static::PEER) {
             $routes = static::$routes;
             return $this->checkRoute($path, $routes);
@@ -115,6 +117,7 @@ class Routing
             $commands = static::$commands_user;
             return $this->checkCommands($path, $commands);
         }
+        return ['error' => 'undefined_stack', 'msg' => 'Непонятно чего вызывать!'];
     }
 
     protected function checkRoute($path, $routes)
@@ -132,7 +135,10 @@ class Routing
                         if (!isset($res['error'])) {
                             return $res;
                         } else {
-                            $this->last_error = $res;
+                            if(!isset($this->last_error['error']) || $this->last_error['error'] != 'validation' || $this->last_error['error'] == 'validation' && $res['error'] == 'validation')
+                            {
+                                $this->last_error = $res;
+                            }
                         }
                     }
                 }
@@ -153,30 +159,29 @@ class Routing
         $pattern = $route['pattern'];
         $validation = $route['validation'];
         $params = [];
-        if ($pattern != '') {
-            while ($pattern != '') {
-                $elem = strtok($pattern, ' ');
-                if (strstr($elem, ':')) {
-                    $var_name = trim($elem, ':');
-                    if ($var_name != 'user_text') {
-                        $value = strtok($path, ' ');
-                    } else {
-                        $value = $path;
-                    }
-                    if (($error = $validation->validate($var_name, $value)) !== true) {
-                        return ['error' => 'validation', 'msg' => $error];
-                    }
-                    $params[$var_name] = $value;
-                } else {
+        while ($pattern != '') {
+            $elem = strtok($pattern, ' ');
+            if (strstr($elem, ':')) {
+                $var_name = trim($elem, ':');
+                if ($var_name != 'user_text') {
                     $value = strtok($path, ' ');
-                    if ($elem != $value) {
-                        return ['error' => 'routing', 'msg' => 'Путь не найден'];
-                    }
+                } else {
+                    $value = $path;
                 }
-                $pattern = trim(str_replace($elem, '', $pattern));
-                $path = trim(str_replace($value, '', $path));
+                if (($error = $validation->validate($var_name, $value)) !== true) {
+                    return ['error' => 'validation', 'msg' => $error];
+                }
+                $params[$var_name] = $value;
+            } else {
+                $value = strtok($path, ' ');
+                if ($elem != $value) {
+                    return ['error' => 'routing', 'msg' => 'Путь не найден'];
+                }
             }
-        } elseif ($path != '') {
+            $pattern = trim(str_replace($elem, '', $pattern));
+            $path = trim(str_replace($value, '', $path));
+        }
+        if ($path != '') {
             return ['error' => 'bad_routing', 'msg' => 'Обнаружен текст после команды, где он не ожидается'];
         }
         $route['params'] = $params;

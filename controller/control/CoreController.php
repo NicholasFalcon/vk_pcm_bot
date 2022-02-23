@@ -6,13 +6,14 @@ namespace controller\control;
 use comboModel\UserPeer;
 use core\Controller;
 use model\Group;
+use model\Peer;
 use model\Role;
 use model\Web;
 use core\Response;
 use model\User;
 use core\App;
 
-class GlobalActionController extends Controller
+class CoreController extends Controller
 {
     public function inviteUserAction($object): Response
     {
@@ -54,7 +55,7 @@ class GlobalActionController extends Controller
                     $result = $this->vk->messagesRemoveChatUser($this->peer->id, $userPeer->user_id);
                     if (isset($result['response']) && $result['response'] == 1) {
                         $response->message = 'Приглашен забаненный пользователь, исключаю....';
-                        $response->setButton("-бан {$userPeer->user_id}", 'remove_ban');
+                        $response->setButton("-бан $userPeer->user_id", 'remove_ban');
                     }
                 }
                 $web = new Web($this->peer->web_id);
@@ -66,7 +67,7 @@ class GlobalActionController extends Controller
                     $result = $this->vk->messagesRemoveChatUser($this->peer->id, $userPeer->user_id);
                     if (isset($result['response']) && $result['response'] == 1) {
                         $response->message = 'Приглашен глобально забаненный пользователь, исключаю....';
-                        $response->setButton("-глобан {$userPeer->user_id}", 'remove_globan');
+                        $response->setButton("-глобан $userPeer->user_id", 'remove_globan');
                     }
                 }
                 $res = $this->userPeer->getCallback('sendHelloMessage', false);
@@ -93,7 +94,7 @@ class GlobalActionController extends Controller
                         $result = $this->vk->messagesRemoveChatUser($this->peer->id, $group->id);
                         if (isset($result['response']) && $result['response'] == 1) {
                             $response->message = 'Приглашена забаненная группа, исключаю....';
-                            $response->setButton("-бан {$group->id}", 'remove_ban');
+                            $response->setButton("-бан $group->id", 'remove_ban');
                         }
                     } elseif ($group->have_ban == 1) {
                         $result = $this->vk->messagesRemoveChatUser($this->peer->id, $group->id);
@@ -153,14 +154,98 @@ class GlobalActionController extends Controller
         return new Response();
     }
 
-    public function helpAction($user_text)
+    public function helpAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '')
-            $response->message = "Весь список команд можно посмотреть в статье по ссылке:"
+        $response->message = "Весь список команд можно посмотреть в статье по ссылке:"
                 . PHP_EOL . "vk.com/@pcm_bot-komandy-bota"
                 . PHP_EOL . "Если есть идеи по контенту бота пишите [hironori|Николя]";
+        return $response;
+    }
+
+    public function pingAction($time_start): Response
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        $start = time() + microtime(1);
+        $this->vk->messagesSend('', '');
+        $res = time() + microtime(1) - $start;
+        $time = time() + microtime(1) - $time_start - $res;
+        $peer1 = Peer::findCountInitPeer();
+        $peer2 = Peer::findCountNotInitPeer();
+        $peers = $peer1 + $peer2;
+        $response->message = "Текущее время на сервере: " . date('G:i:s')
+            . PHP_EOL . "Задержка vk api: " . number_format($res, 2, ',', ' ') . " секунд."
+            . PHP_EOL . "Задержка на сервере: " . number_format($time, 2, ',', ' ') . " секунд."
+            . PHP_EOL . "Число пользователей в беседах: " . User::findCountUsers()
+            . PHP_EOL . "Число инициализированных бесед на данный момент: " . $peer1
+            . PHP_EOL . "Число бесед пустышек: " . $peer2
+            . PHP_EOL . "Число бесед на данный момент: " . $peers;
+//                . PHP_EOL . "[hironori|​]"; // тут пустой символ, работающий на упоминание, справа от квадратной скобки закрывающей ставишь и влево один раз и с шифтом второй раз и копируешь
+        $response->setButtonRow(['Профиль мой', "profile"], ['Клан мой', "ping"]);
+        return $response;
+    }
+
+    public function initAction(): Response
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        if($this->peer->owner_id == 0)
+        {
+            $peer_data = $this->vk->messagesGetConversationsById($this->peer->id);
+            if(isset($peer_data['error']['error_code']) && $peer_data['error']['error_code'] == 917)
+            {
+                $response->message = 'У бота нет доступа к беседе, пожалуйста, выдайте ему администратора беседы!';
+                return $response;
+            }
+            if(isset($peer_data['response']['count']) && $peer_data['response']['count'] == 0)
+            {
+                $response->message = 'У бота нет доступа к беседе, пожалуйста, выдайте ему администратора беседы!';
+                return $response;
+            }
+            if(isset($peer_data['response']['items'][0]['chat_settings']['owner_id']))
+            {
+                $this->peer->title = $peer_data['response']['items'][0]['chat_settings']['title'];
+                $this->peer->owner_id = $peer_data['response']['items'][0]['chat_settings']['owner_id'];
+
+                $this->peer->save();
+            }
+        }
+        if ($this->peer->owner_id == $this->user->id)
+            if ($this->peer->init == 0) {
+                $this->vk->messagesSend($this->peer->id, 'Получаю первоначальную информацию по беседе, ожидайте');
+                $this->peer->init = 1;
+                $this->peer->save();
+                App::updatePeer($this->peer->id);
+                App::updateUsers($this->peer);
+                if ($this->peer->days == 0) {
+                    $this->peer->days = time();
+                }
+                $this->peer->save();
+                $response->message = 'Инициализация успешна';
+            } else {
+                $response->message = 'Инициализация уже проводилась, пожалуйста, обновите беседу (беседа обновить)';
+                $response->setButton('беседа обновить', 'peer_update');
+            }
+        else
+            $response->message = 'Куда лезешь не создатель?';
+        return $response;
+    }
+
+    public function testIntAction($number)
+    {
+        $response = new Response();
+        $response->message = "$number - переданный параметр";
+        $response->peer_id = $this->peer->id;
+        return $response;
+    }
+
+    public function testDoubleAction($number, $text)
+    {
+        $response = new Response();
+        $response->message = "Число $number, а текст $text";
+        $response->peer_id = $this->peer->id;
         return $response;
     }
 }

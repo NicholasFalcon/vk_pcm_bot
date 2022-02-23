@@ -71,12 +71,12 @@ class Validation
             }
             return "Параметр '$var_name' не соответствует ожидаемым: ".implode(', ', static::$selectors[$var_name]);
         }
-        throw new Exception("Неизсветная переменная '$var_name'");
+        throw new Exception("Неизвестная переменная '$var_name'");
     }
 
     protected function is_int($var_name, $value)
     {
-        if(is_int($value))
+        if(is_numeric($value))
         {
             return true;
         }
@@ -120,11 +120,11 @@ class Validation
     {
         if(isset(static::$lengths[$var_name]))
         {
-            if(strlen($value) <= static::$lengths[$var_name])
+            if(mb_strlen($value) <= static::$lengths[$var_name])
             {
                 return true;
             }
-            return "Длина параметра '$var_name' превышена";
+            return "Длина параметра '$var_name' превышена, максимальная длина - ".static::$lengths[$var_name];
         }
         throw new Exception("Неизсветная переменная '$var_name'");
     }

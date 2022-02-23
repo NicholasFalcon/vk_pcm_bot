@@ -3,6 +3,7 @@
 namespace core;
 
 use api\Vk;
+use controller\control\CoreController;
 use controller\user\VariablesController;
 use model\Role;
 use model\User;
@@ -199,14 +200,36 @@ class Router
                      * @var Controller $controller
                      */
                     if ($route !== false) {
+                        if(isset($route['error']))
+                        {
+                            if($route['error'] == 'validation')
+                            {
+                                $response = new Response();
+                                $response->message = $route['msg'];
+                                $response->peer_id = $peer->id;
+                                return $response;
+                            }
+                            else
+                            {
+                                return new Response();
+                            }
+                        }
                         $class = $route['class'];
                         if (class_exists($class)) {
+                            if($class != CoreController::class && $peer->init == 0)
+                            {
+                                $response = new Response();
+                                $response->peer_id = $peer->id;
+                                $response->message = 'Для использования полного функционала бота проведите инициализацию беседы (беседа инициализация)';
+                                $response->setButton('беседа инициализация', 'peer_init');
+                                return $response;
+                            }
                             $controller = new $class($this->vk, $user, $peer, $userPeer);
                             return $controller->run($route['action'], array_merge(['time_start' => $this->timeStart], $action, $route['params']));
                         }
                     } elseif (!$peer->getSetting(App::S_USE_TRIGGERS)) {
                         $controller = new TriggerController($this->vk, $user, $peer, $userPeer);
-                        return $controller->run('get', $action);
+                        return $controller->run('getAction', $action);
                     }
                 }
             }

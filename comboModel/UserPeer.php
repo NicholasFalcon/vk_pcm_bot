@@ -78,16 +78,6 @@ class UserPeer extends ComboModel
             ->where("`role_id` = '".Role::MAIN_ADMIN."' and `peer_id` = '$peer_id' and `user_id` > 0 and `deleted` = 0")
             ->query();
     }
-
-    public static function getAdminsKick($peer_id)
-    {
-        return App::getPBase()
-            ->select('first_name_nom', 'status', 'user_id')
-            ->from('users')
-            ->innerJoin('users', 'id', 'users_peer_info', 'user_id')
-            ->where("`status` > '3' and `peer_id` = '$peer_id' and `deleted` = 0")
-            ->query();
-    }
     
     public static function resetDay()
     {
@@ -416,7 +406,7 @@ class UserPeer extends ComboModel
         $res = App::getPBase()
             ->select('role_id')
             ->from('roles_access')
-            ->where("`access_id` = '$access_id' and `role_id` = '$this->id'")
+            ->where("`access_id` = '$access_id' and `role_id` = '$this->role_id'")
             ->queryOne('role_id');
         return !is_null($res);
     }

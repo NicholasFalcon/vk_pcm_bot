@@ -15,52 +15,6 @@ use core\App;
 
 class PeerController extends Controller
 {
-    public function initAction($object): Response
-    {
-        $response = new Response();
-        $response->peer_id = $this->peer->id;
-        if($this->peer->owner_id == 0)
-        {
-            $peer_data = $this->vk->messagesGetConversationsById($this->peer->id);
-            if(isset($peer_data['error']['error_code']) && $peer_data['error']['error_code'] == 917)
-            {
-                $response->message = 'У бота нет доступа к беседе, пожалуйста, выдайте ему администратора беседы!';
-                return $response;
-            }
-            if(isset($peer_data['response']['count']) && $peer_data['response']['count'] == 0)
-            {
-                $response->message = 'У бота нет доступа к беседе, пожалуйста, выдайте ему администратора беседы!';
-                return $response;
-            }
-            if(isset($peer_data['response']['items'][0]['chat_settings']['owner_id']))
-            {
-                $this->peer->title = $peer_data['response']['items'][0]['chat_settings']['title'];
-                $this->peer->owner_id = $peer_data['response']['items'][0]['chat_settings']['owner_id'];
-
-                $this->peer->save();
-            }
-        }
-        if ($this->peer->owner_id == $this->user->id)
-            if ($this->peer->init == 0) {
-                $this->vk->messagesSend($this->peer->id, 'Получаю первоначальную информацию по беседе, ожидайте');
-                $this->peer->init = 1;
-                $this->peer->save();
-                App::updatePeer($this->peer->id);
-                App::updateUsers($this->peer);
-                if ($this->peer->days == 0) {
-                    $this->peer->days = time();
-                }
-                $this->peer->save();
-                $response->message = 'Инициализация успешна';
-            } else {
-                $response->message = 'Инициализация уже проводилась, пожалуйста, обновите беседу (беседа обновить)';
-                $response->setButton('беседа обновить', 'peer_update');
-            }
-        else
-            $response->message = 'Куда лезешь не создатель?';
-        return $response;
-    }
-
     public function UpdateWebAction()
     {
         $response = new Response();

@@ -20,6 +20,7 @@ use ReflectionMethod;
 
 class Controller
 {
+    public static bool $isGlobal = false;
     protected Vk $vk;
     protected User $user;
     protected Peer $peer;

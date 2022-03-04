@@ -216,7 +216,8 @@ class Router
                         }
                         $class = $route['class'];
                         if (class_exists($class)) {
-                            if($class != CoreController::class && $peer->init == 0)
+                            $controller = new $class($this->vk, $user, $peer, $userPeer);
+                            if(!$controller::$isGlobal && $peer->init == 0)
                             {
                                 $response = new Response();
                                 $response->peer_id = $peer->id;
@@ -224,7 +225,6 @@ class Router
                                 $response->setButton('беседа инициализация', 'peer_init');
                                 return $response;
                             }
-                            $controller = new $class($this->vk, $user, $peer, $userPeer);
                             return $controller->run($route['action'], array_merge(['time_start' => $this->timeStart], $action, $route['params']));
                         }
                     } elseif (!$peer->getSetting(App::S_USE_TRIGGERS)) {

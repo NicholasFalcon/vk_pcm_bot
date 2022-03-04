@@ -9,6 +9,8 @@ use core\Response;
 
 class RpCommandController extends Controller
 {
+    public static bool $isGlobal = true;
+
     private function rpOnBody($id, $text)
     {
         $user = new User($id);
@@ -23,15 +25,20 @@ class RpCommandController extends Controller
     {
         if ($id !== false) {
             if ($id > 0)
+            {
                 if ($this->user->sex == 1)
                     return $this->rpOnBody($id, $girl);
                 else
                     return $this->rpOnBody($id, $boy);
+            }
         } else
+        {
             if ($this->user->sex == 1)
                 return $this->rpOnSelf($girl);
             else
                 return $this->rpOnSelf($boy);
+        }
+        return new Response();
     }
 
     private function rpOnSelf($text)

@@ -12,6 +12,7 @@ use core\App;
 class TriggerController extends Controller
 {
     private int $globalId = 2000000001;
+    public static bool $isGlobal = true;
 
     public function createAction($object, $user_text): Response
     {

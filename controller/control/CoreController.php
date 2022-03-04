@@ -15,6 +15,8 @@ use core\App;
 
 class CoreController extends Controller
 {
+    public static bool $isGlobal = true;
+
     public function inviteUserAction($object): Response
     {
         $response = new Response();

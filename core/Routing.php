@@ -79,11 +79,11 @@ class Routing
         static::set(static::$routes_user, $name, $class, $action, $validation);
     }
 
-    protected static function setCommand($commands, $name, $class, $action)
+    protected static function setCommand(&$commands, $name, $class, $action)
     {
         $command = strtok($name, ' ');
-        $pattern = trim(str_replace($name, '', $command));
-        static::$commands[$command]['patterns'][] = [
+        $pattern = trim(str_replace($command, '', $name));
+        $commands[$command]['patterns'][] = [
             'class' => $class,
             'action' => $action . 'Action',
             'pattern' => $pattern
@@ -191,10 +191,11 @@ class Routing
     protected function checkCommands($path, $commands)
     {
         $command = strtok($path, ' ');
+        $params = trim(str_replace($command, '', $path));
         if (isset($commands[$command])) {
             if (isset($commands[$command]['patterns'])) {
                 foreach ($commands[$command]['patterns'] as $pattern) {
-                    $res = $this->runCommands($commands[$command], $path);
+                    $res = $this->runCommands($pattern, $params);
                     if (!isset($res['error'])) {
                         return $res;
                     } else {

@@ -29,11 +29,11 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function editAction($user_text): Response
+    public function editAction($role_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $role_id = intval($user_text);
+        $role_id = intval($role_id);
         $role = Role::findById($role_id);
         if($role === false)
         {

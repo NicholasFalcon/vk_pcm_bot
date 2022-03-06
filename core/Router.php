@@ -261,7 +261,7 @@ class Router
                 if($user->user_action != '')
                 {
                     $data = explode(' ', $user->user_action);
-                    $action_name = $data[0];
+                    $action_name = $data[0].'Action';
                     unset($data[0]);
                     $variables = [];
                     if(is_array($data))

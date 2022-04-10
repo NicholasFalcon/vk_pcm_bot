@@ -1,6 +1,6 @@
 <?php
 
-namespace controller\control;
+namespace controller\fun;
 
 use core\Controller;
 use model\Hero;

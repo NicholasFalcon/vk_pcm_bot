@@ -7,7 +7,7 @@ use model\Hero;
 use model\User;
 use core\Response;
 
-class RpCommandController extends Controller
+class RolePlayController extends Controller
 {
     public static bool $isGlobal = true;
 

@@ -34,5 +34,5 @@ Routing::group('-автокик', function () {
     Routing::setForPeer('', PeerController::class, 'autoKickOff');
 });
 Routing::group('найди', function () {
-    Routing::setForPeer(':user_text', PeerController::class, 'autoKickOff');
+    Routing::setForPeer(':user_text', PeerController::class, 'search');
 });

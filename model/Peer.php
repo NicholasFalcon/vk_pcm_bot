@@ -148,6 +148,16 @@ class Peer extends Model
             ->queryOne('count');
     }
 
+
+    public static function PeerByUser($user_id)
+    {
+        return App::getPBase()
+            ->select()
+            ->from(static::$table)
+            ->where ("`owner_id` = '%$user_id%'")
+            ->query();
+    }
+
     public static function RandPeer()
     {
        return App::getPBase()

@@ -3,6 +3,17 @@
 use controller\control\AdminController;
 use core\Routing;
 
+Routing::group('беседа', function () {
+    Routing::group('инфо', function () {
+        Routing::setForPeer('', AdminController::class, 'ChatInfo');
+    });
+});
+Routing::group('чат', function () {
+    Routing::group('инфо', function () {
+        Routing::setForPeer('', AdminController::class, 'ChatInfo');
+    });
+});
+
 Routing::group('администрирование', function () {
     Routing::setForPeer('', AdminController::class, 'Administration');
 });
@@ -63,6 +74,12 @@ Routing::group('пред', function () {
 Routing::group('-пред', function () {
     Routing::setForPeer(':user_text', AdminController::class, 'removeWarning');
 });
+Routing::group('тотал', function () {
+    Routing::setForPeer(':user_text', AdminController::class, 'total');
+});
+Routing::group('-тотал', function () {
+    Routing::setForPeer(':user_text', AdminController::class, 'removeTotal');
+});
 
 Routing::group('кого', function () {
     Routing::setForPeer('нет', AdminController::class, 'findAdminsByWeb');
@@ -78,12 +95,10 @@ Routing::group('преды', function () {
 Routing::group('молчуны', function () {
     Routing::setForPeer('', AdminController::class, 'sleepers');
 });
-Routing::group('чатссылка', function () {
-    Routing::setForPeer('', AdminController::class, 'ChatUrl');
-    Routing::group('установить', function () {
-        Routing::setForPeer(':user_text', AdminController::class, 'SetChatUrl');
+Routing::group('бан', function () {
+    Routing::group('лист', function () {
+        Routing::setForPeer('', AdminController::class, 'BanList');
     });
-    Routing::setForPeer('удалить', AdminController::class, 'DeleteChatUrl');
 });
 Routing::group('кик', function () {
     Routing::group('собачек', function () {
@@ -93,5 +108,36 @@ Routing::group('кик', function () {
 Routing::group('кик', function () {
     Routing::group('вышедших', function () {
         Routing::setForPeer('', AdminController::class, 'KickLeavers');
+    });
+});
+
+Routing::group('чатссылка', function () {
+    Routing::setForPeer('', AdminController::class, 'ChatUrl');
+    Routing::group('установить', function () {
+        Routing::setForPeer(':user_text', AdminController::class, 'SetChatUrl');
+    });
+    Routing::setForPeer('удалить', AdminController::class, 'DeleteChatUrl');
+});
+Routing::group('правила', function () {
+    Routing::setForPeer('', AdminController::class, 'Rules');
+    Routing::group('установить', function () {
+        Routing::setForPeer(':user_text', AdminController::class, 'RulesSet');
+    });
+    Routing::setForPeer('удалить', AdminController::class, 'RulesDeleted');
+});
+Routing::group('приветствие', function () {
+    Routing::setForPeer('', AdminController::class, 'HelloMessage');
+    Routing::group('установить', function () {
+        Routing::setForPeer(':user_text', AdminController::class, 'SetHelloMessage');
+    });
+    Routing::setForPeer('удалить', AdminController::class, 'HelloMessageDeleted');
+});
+
+Routing::group('кто', function () {
+    Routing::group('добавил', function () {
+        Routing::setForPeer('', AdminController::class, 'invitedBy');
+    });
+    Routing::group('пригласил', function () {
+        Routing::setForPeer('', AdminController::class, 'invitedBy');
     });
 });

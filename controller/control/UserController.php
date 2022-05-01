@@ -6,6 +6,8 @@ namespace controller\control;
 use comboModel\UserPeer;
 use core\App;
 use core\Controller;
+use model\Peer;
+use model\Role;
 use model\User;
 use core\Response;
 
@@ -89,6 +91,22 @@ class   UserController extends Controller
 //        return $response;
 //    }
 
+    public function MyPeersAction()
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        $number = 0;
+        $answer = '';
+        $peer = Peer::PeerByUser($this->user->id);
+        while ($number != count($peer)) {
+            $ts = $peer[$number]['id'] - 2000000000;
+            $number++;
+            $answer .= $number . ") Беседа {$peer[$number]['title']} имеет id = {$ts}" . PHP_EOL;
+        }
+        $response->message = "Беседы:" . PHP_EOL . $answer;
+        return $response;
+    }
+
     public function typesAction($user_text)
     {
         $response = new Response();
@@ -111,7 +129,7 @@ class   UserController extends Controller
         return $response;
     }
 
-    public function nickAction($user_text)
+    public function SetNickAction($user_text)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -157,7 +175,7 @@ class   UserController extends Controller
 //        return $response;
 //    }
 
-    public function pinAction($user_text)
+    public function SetPinAction($user_text)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -181,51 +199,48 @@ class   UserController extends Controller
         return $response;
     }
 
-    public function shutUpAction($user_text)
+    public function shutUpAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $this->user->is_callable = 0;
-            $this->user->save();
-            $response->message = "Бот не будет вас упоминать, кроме созвать всех)";
-        }
+        $this->user->is_callable = 0;
+        $this->user->save();
+        $response->message = "Бот не будет вас упоминать, кроме созвать всех)";
         return $response;
     }
 
-    public function callMeAction($user_text)
+    public function callMeAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $this->user->is_callable = 1;
-            $this->user->save();
-            $response->message = "Бот будет вас упоминать";
-        }
+        $this->user->is_callable = 1;
+        $this->user->save();
+        $response->message = "Бот будет вас упоминать";
         return $response;
     }
 
-    public function getInactiveAction($user_text)
+    public function getInactiveAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
+        if ($this->userPeer->role_id == Role::MAIN_ADMIN) {
             $userInfo = UserPeer::findInactive($this->peer->id);
             $message = $this->render('top/inactive', [
                 'userInfo' => $userInfo,
                 'title' => 'Неактивные пользователи:',
-                'timeInactive' => (time() - $this->peer->getSetting(App::S_INACTIVE_KICK_TIME)*3600*24)
+                'timeInactive' => (time() - $this->peer->getSetting(App::S_INACTIVE_KICK_TIME) * 3600 * 24)
             ]);
             $response->message = $message;
-        }
+        } else
+            $response->message = "У вас не хватает статуса для этой команды.";
         return $response;
     }
 
-    public function GetNickAction($user_text)
+    public function GetNickAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '' && $this->user->is_dev == 1) {
+        if ($this->user->is_dev == 1) {
             $userInfo = User::findNick();
             $message = $this->render('top/nick', [
                 'userInfo' => $userInfo,
@@ -246,11 +261,10 @@ class   UserController extends Controller
         $response = new Response();
         $response->peer_id = $this->peer->id;
         if ($this->user->is_dev == 1) {
-            $this->vk->messagesSend($this->peer->id, "Начинаю поиск по запросу {$user_text}.");
             $num = 0;
             while ($num != 1) {
                 $num++;
-                $search = $this->vk->docsSearch($user_text, $num, 1);
+                $search = $this->vk->docsSearch($user_text, $num, 5);
                 foreach ($search as $result) {
                     foreach ($result['items'] as $item) {
                         sleep(1);
@@ -258,12 +272,11 @@ class   UserController extends Controller
                     }
                 }
             }
-            $response->message = "Ready";
         }
         return $response;
     }
 
-    public function TranslateAction($user_text, $object)
+    public function translateTextAction($user_text, $object)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -273,13 +286,6 @@ class   UserController extends Controller
             $text = str_replace($rus, $lat, mb_strtolower($object['message']['reply_message']['text']));
             $response->message = $text;
         }
-        return $response;
-    }
-
-    public function testAction()
-    {
-        $response = new Response();
-        $response->peer_id = $this->peer->id;
         return $response;
     }
 }

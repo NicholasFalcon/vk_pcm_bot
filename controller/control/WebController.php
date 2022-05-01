@@ -18,7 +18,7 @@ class WebController extends Controller
      * @return Response
      * Вывод текущей сетки бесед
      */
-    public function getAction($user_text) :Response
+    public function getAction() :Response
     {
         $response = new Response();
         $peer = new Peer($this->peer->id);
@@ -93,9 +93,7 @@ class WebController extends Controller
                     $response->message = 'Успешно привязана';
                 else
                     $response->message = 'Ошибка!';
-            }
-            else
-            {
+            } else {
                 $confirmation = new UserConfirmation();
                 $confirmation->user_id = $this->peer->owner_id;
                 $confirmation->peer_id = $this->peer->id;
@@ -111,7 +109,7 @@ class WebController extends Controller
                 $response->setButtonRow(["Подтверждаю {$confirmation->id}", "accept_{$confirmation->id}"], ["Отказываюсь {$confirmation->id}", "decline_{$confirmation->id}"]);
             }
         } else
-            $response->message = 'Выбранная секта не найдена, либо вы не ее создатель!';
+            $response->message = 'Выбранная секта не найдена, либо вы не создатель!';
         return $response;
     }
 
@@ -215,8 +213,7 @@ class WebController extends Controller
                 $user = new User(0);
                 $obj = $this->getUserFromMessage($user_text);
                 $id = $this->getIdFromMessage($object);
-                if($obj != false && get_class($obj) == self::$classUser)
-                {
+                if($obj != false && get_class($obj) == self::$classUser) {
                     $user = $obj;
                 }
                 if ($user_text == '' && $id > 0) {

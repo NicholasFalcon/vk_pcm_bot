@@ -409,12 +409,9 @@ class AdminController extends Controller
         $user = $this->getUserFromMessage($username, $object);
         if ($this->user->is_dev == 1) {
             if ($user !== false) {
-                if ($user->is_dev == 0) {
-                    $user->black_list = 1;
-                    $user->save();
-                    $this->vk->messagesSend($this->peer->id, "[id$user->id|$user->first_name_nom] получил ТоталЧс. Бот будет игнорировать все его команды.");
-                } else
-                    $response->message = "Не могу дать тотал СОЗДАТЕЛЮ БОТУ!";
+                $user->black_list = 1;
+                $user->save();
+                $this->vk->messagesSend($this->peer->id, "[id$user->id|$user->first_name_nom] получил ТоталЧс. Бот будет игнорировать все его команды.");
             } else
                 $response->message = "Выберите сообщение человека, кому хотите выдать тотал.";
         }
@@ -429,12 +426,9 @@ class AdminController extends Controller
         $user = $this->getUserFromMessage($username, $object);
         if ($this->user->is_dev == 1) {
             if ($user !== false) {
-                if ($user->is_dev == 0) {
-                    $user->black_list = 0;
-                    $user->save();
-                    $this->vk->messagesSend($this->peer->id, 'У пользователя снят ТоталЧс.');
-                } else
-                    $response->message = "Не могу снять тотал с СОЗДАТЕЛЯ БОТА!";
+                $user->black_list = 0;
+                $user->save();
+                $this->vk->messagesSend($this->peer->id, 'У пользователя снят ТоталЧс.');
             }
         }
         return $response;
@@ -485,9 +479,8 @@ class AdminController extends Controller
                         $response->message = 'Ошибка!';
                 }
             }
-        } else {
+        } else
             $response->message = "Ваша роль не имеет доступа к данной команде";
-        }
         return $response;
     }
 
@@ -578,11 +571,6 @@ class AdminController extends Controller
             $response->message = "Вам не доступна данная команда!";
         return $response;
     }
-
-//    public function debugAction($object)
-//    {
-//
-//    }
 
     public function getOnlineAction(): Response
     {
@@ -911,7 +899,7 @@ class AdminController extends Controller
                     . PHP_EOL . "Ошибки чата: {$this->peer->getSetting(16)}"
                     . PHP_EOL . "Цвет кнопок: $color"
                     . PHP_EOL . "Количество киков за сегодня: {$this->peer->count_kick}"
-                    . PHP_EOL . "Вышли сами: $countLeave";
+                    . PHP_EOL . "Вышли: $countLeave";
             }
         } else {
             $response->message = "Вы не администратор данной беседы!";
@@ -935,7 +923,7 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function RulesSetZeroAction($user_text): Response
+    public function RulesDeletedAction($user_text): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -964,7 +952,7 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function HelloMessageSetAction($user_text): Response
+    public function SetHelloMessageAction($user_text): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -980,7 +968,7 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function HelloMessageSetZeroAction($user_text): Response
+    public function HelloMessageDeletedAction($user_text): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -1008,22 +996,21 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function BanListAction($user_text): Response
+    public function BanListAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $message = 'Бан лист пуст.';
-        if ($user_text == '')
-            if ($this->userPeer->haveAccess(Role::BAN_ACCESS) || $this->user->is_dev == 1) {
-                $users = UserPeer::SelectIsBan($this->peer->id);
-                if (count($users) != 0) {
-                    $message = $this->render('admin/ban_list', [
-                        'peer_id' => $this->peer->id,
-                        'title' => "Пользователи забаненные в беседе:",
-                        'users' => $users
-                    ]);
-                }
+        if ($this->userPeer->haveAccess(Role::BAN_ACCESS) || $this->user->is_dev == 1) {
+            $users = UserPeer::SelectIsBan($this->peer->id);
+            if (count($users) != 0) {
+                $message = $this->render('admin/ban_list', [
+                    'peer_id' => $this->peer->id,
+                    'title' => "Пользователи забаненные в беседе:",
+                    'users' => $users
+                ]);
             }
+        }
         $response->message = $message;
         return $response;
     }

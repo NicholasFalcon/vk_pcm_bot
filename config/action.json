@@ -1263,24 +1263,6 @@
     "controller": "control\\Wedding",
     "action": "weddingAll"
   },
-  "добавить": {
-    "маршрут": {
-      "controller": "DiplomAnton\\Route",
-      "action": "insertRoute"
-    },
-    "станцию": {
-      "controller": "DiplomAnton\\Station",
-      "action": "insertStation"
-    },
-    "переход": {
-      "controller": "DiplomAnton\\Transition",
-      "action": "insertTransition"
-    }
-  },
-  "поиск": {
-    "controller": "DiplomAnton\\Route",
-    "action": "selectRouteUser"
-  },
   "погода": {
     "controller": "fun\\Fun",
     "action": "Weather"
@@ -1304,16 +1286,6 @@
   "биржа": {
     "controller": "fun\\Fun",
     "action": "stockMarket"
-  },
-  "город": {
-    "поменять": {
-      "controller": "DiplomAnton\\Route",
-      "action": "updateCountryByUser"
-    },
-    "*": {
-      "controller": "DiplomAnton\\Route",
-      "action": "updateCountryByUser"
-    }
   },
   "роль": {
     "controller": "control\\Admin",

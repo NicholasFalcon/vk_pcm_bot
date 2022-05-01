@@ -3,10 +3,12 @@
 namespace controller\fun;
 
 use comboModel\UserPeer;
-use Controller;
+use core\Controller;
+use core\Response;
+use core\App;
 use model\Peer;
 use model\User;
-use Response;
+use model\Role;
 
 class FunController extends Controller
 {
@@ -76,21 +78,10 @@ class FunController extends Controller
         return $response;
     }
 
-    public function WeatherAction($user_text)
+    public function WeatherAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $header = [
-            'accept: application/json, text/plain, */*',
-            'accept-encoding: gzip, deflate, br',
-            'accept-language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Cache-Control: max-age=0',
-            'Connection: keep-alive',
-            'Cookie: user_city_id=21409; geoplugin_latitude=55.7527; geoplugin_longitude=37.6172; _gcl_au=1.1.1072698149.1592850451; _ga=GA1.2.658140146.1592850451; _gid=GA1.2.78152469.1592850451; _ym_uid=1592850451619027229; _ym_d=1592850451; _ym_isad=2; user_city_id=1; cpass=1; arns=1592854428798; advice-19072018=viewed; _gat_UA-3060375-6=1',
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.142'
-        ];
-        $res = $this->curlExec("https://sinoptik.com.ru/api/suggest.php?q=$user_text&l=ru&clat=55.75&clon=37.62", [], $header);
-        print_r($res);
         $response->message = "Пните Колю чтоб сделал погоду!!!!!";
         return $response;
     }
@@ -149,22 +140,20 @@ class FunController extends Controller
         return $response;
     }
 
-    public function PeersAction($user_text)
+    public function PeersAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $number = 1;
-            $answer = '';
-            $peer = Peer::RandPeer();
-            while ($number != 6) {
-                $id = rand(1, count($peer));
-                $ts = $peer[$id]['id'] - 2000000000;
-                $answer .= $number . ") Беседа {$peer[$id]['title']} имеет id = {$ts}" . PHP_EOL;
-                $number++;
-            }
-            $response->message = "Беседы:" . PHP_EOL . $answer;
+        $number = 1;
+        $answer = '';
+        $peer = Peer::RandPeer();
+        while ($number != 6) {
+            $id = rand(1, count($peer));
+            $ts = $peer[$id]['id'] - 2000000000;
+            $answer .= $number . ") Беседа {$peer[$id]['title']} имеет id = {$ts}" . PHP_EOL;
+            $number++;
         }
+        $response->message = "Беседы:" . PHP_EOL . $answer;
         return $response;
     }
 

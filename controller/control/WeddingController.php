@@ -132,39 +132,35 @@ class WeddingController extends Controller
         return $response;
     }
 
-    public function weddingAllAction($user_text)
+    public function weddingAllAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $weddings = Wedding::weddingAll($this->peer->id);
-            if (!empty($weddings)) {
-                $message = $this->render('top/weddings', [
-                    'weddings' => $weddings,
-                    'title' => 'Браки в данной беседе:'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = "В данной беседе пока что нет браков. Для того чтобы предложить брак пропишите команду брак на сообщение пользователя.";
-        }
+        $weddings = Wedding::weddingAll($this->peer->id);
+        if (!empty($weddings)) {
+            $message = $this->render('top/weddings', [
+                'weddings' => $weddings,
+                'title' => 'Браки в данной беседе:'
+            ]);
+            $response->message = $message;
+        } else
+            $response->message = "В данной беседе пока что нет браков. Для того чтобы предложить брак пропишите команду брак на сообщение пользователя.";
         return $response;
     }
 
-    public function GetKidsAction($user_text)
+    public function GetKidsAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $weddings = WeddingKids::FindKids($this->user->id, $this->peer->id);
-            if (!empty($weddings)) {
-                $message = $this->render('top/weddingKids', [
-                    'weddings' => $weddings,
-                    'title' => 'Ваши дети :3'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = "У вас нет детишек в данной беседе:3";
-        }
+        $weddings = WeddingKids::FindKids($this->user->id, $this->peer->id);
+        if (!empty($weddings)) {
+            $message = $this->render('top/weddingKids', [
+                'weddings' => $weddings,
+                'title' => 'Ваши дети :3'
+            ]);
+            $response->message = $message;
+        } else
+            $response->message = "У вас нет детишек в данной беседе:3";
         return $response;
     }
 
@@ -186,23 +182,21 @@ class WeddingController extends Controller
         return $response;
     }
 
-    public function weddingGetAction($user_text)
+    public function weddingGetAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $wedding = Wedding::findByUserId($this->user->id, $this->peer->id);
-            if (!empty($wedding)) {
-                $weddings = WeddingKids::FindKids($this->user->id, $this->peer->id);
-                $message = $this->render('top/weddingKids', [
-                    'weddings' => $weddings,
-                    'title' => 'Ваши дети :3'
-                ]);
-                $response->message = "Вы состоите в браке с " . (new User($wedding->getPartner()))->getName()
-                . PHP_EOL . "{$message}";
-            } else
-                $response->message = "У вас нет брака в данной бесед :(";
-        }
+        $wedding = Wedding::findByUserId($this->user->id, $this->peer->id);
+        if (!empty($wedding)) {
+            $weddings = WeddingKids::FindKids($this->user->id, $this->peer->id);
+            $message = $this->render('top/weddingKids', [
+                'weddings' => $weddings,
+                'title' => 'Ваши дети :3'
+            ]);
+            $response->message = "Вы состоите в браке с " . (new User($wedding->getPartner()))->getName()
+            . PHP_EOL . "{$message}";
+        } else
+            $response->message = "У вас нет брака в данной беседе.";
         return $response;
     }
 
@@ -295,12 +289,12 @@ class WeddingController extends Controller
         return $response;
     }
 
-    public function AnswerKidYesAction($user_text)
+    public function AnswerKidYesAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $kid = WeddingKids::FindKidNew($this->user->id, $this->peer->id);
-        if ($kid !== false && $user_text == '' && $this->user->id == $kid->user_id) {
+        if ($kid !== false && $this->user->id == $kid->user_id) {
             $kid->sex_tst = time();
             $kid->save();
             $users = new User($kid->user_id);
@@ -311,12 +305,12 @@ class WeddingController extends Controller
         return $response;
     }
 
-    public function AnswerKidNoAction($user_text)
+    public function AnswerKidNoAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $kid = WeddingKids::FindKidNew($this->peer->id, $this->peer->id);
-        if ($kid !== false && $user_text == '' && $this->user->id == $kid->user_id) {
+        if ($kid !== false && $this->user->id == $kid->user_id) {
             $kid->delete();
             $users = new User($kid->user_id);
             $users2 = new User($kid->mother);

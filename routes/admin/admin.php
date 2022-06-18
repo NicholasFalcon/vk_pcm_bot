@@ -14,30 +14,17 @@ Routing::group('чат', function () {
     });
 });
 
-Routing::group('администрирование', function () {
-    Routing::setForPeer('', AdminController::class, 'Administration');
+Routing::group('модуль', function () {
+    Routing::setForPeer('администрирование', AdminController::class, 'Administration');
+    Routing::setForPeer('участник', AdminController::class, 'Profile');
+    Routing::setForPeer('беседа', AdminController::class, 'Peer');
+    Routing::setForPeer('сетка', AdminController::class, 'Web');
+    Routing::setForPeer('команды', AdminController::class, 'Commands');
+    Routing::setForPeer('действия', AdminController::class, 'RpCommands');
+    Routing::setForPeer('кланы', AdminController::class, 'Clans');
+    Routing::setForPeer('игры', AdminController::class, 'Games');
 });
-Routing::group('участник', function () {
-    Routing::setForPeer('', AdminController::class, 'Profile');
-});
-Routing::group('беседа', function () {
-    Routing::setForPeer('', AdminController::class, 'Peer');
-});
-Routing::group('сетка', function () {
-    Routing::setForPeer('', AdminController::class, 'Web');
-});
-Routing::group('команды', function () {
-    Routing::setForPeer('', AdminController::class, 'Commands');
-});
-Routing::group('действия', function () {
-    Routing::setForPeer('', AdminController::class, 'RpCommands');
-});
-Routing::group('кланы', function () {
-    Routing::setForPeer('', AdminController::class, 'Clans');
-});
-Routing::group('игры', function () {
-    Routing::setForPeer('', AdminController::class, 'Games');
-});
+
 Routing::group('назад', function () {
     Routing::setForPeer('', AdminController::class, 'Module');
 });

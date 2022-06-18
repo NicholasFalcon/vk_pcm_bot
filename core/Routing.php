@@ -60,8 +60,10 @@ class Routing
                 'validation' => $validation ?: new Validation()
             ];
         } else {
-            $routes[$name]['patterns'][] = [
-                'pattern' => '',
+            $command = strtok($name, ' ');
+            $pattern = trim(str_replace($command, '', $name));
+            $routes[$command]['patterns'][] = [
+                'pattern' => $pattern,
                 'class' => $class,
                 'action' => $action . 'Action',
                 'validation' => $validation ?: new Validation()

@@ -18,18 +18,18 @@ class WebController extends Controller
      * @return Response
      * Вывод текущей сетки бесед
      */
-    public function getAction() :Response
+    public function getAction(): Response
     {
         $response = new Response();
         $peer = new Peer($this->peer->id);
         $response->peer_id = $this->peer->id;
         $web = Web::findById($this->peer->web_id);
-        if($web !== false) {
+        if ($web !== false) {
             $user = new User($peer->owner_id);
-            if ($peer->owner_id > 0 ) {
+            if ($peer->owner_id > 0) {
                 $owner = $user->getName();
             } else {
-                $text = "[club".$peer->owner_id."|Группа]";
+                $text = "[club" . $peer->owner_id . "|Группа]";
                 $owner = str_replace('-', '', $text);
             }
             $response->message = $this->render('web/info', [
@@ -39,9 +39,7 @@ class WebController extends Controller
             ]);
             $response->setButtonRow(['Сетка инфо', 'web_info', Response::PRIMARY]);
             $response->setButtonRow(["Сетка отвязать", "web_disconnect", Response::NEGATIVE]);
-        }
-        else
-        {
+        } else {
             $response->message = 'Беседа еще не привязана к сетке!';
             $response->setButtonRow(["Сетка привязать", "web_add_peer", Response::POSITIVE]);
         }
@@ -52,7 +50,8 @@ class WebController extends Controller
      * @return Response
      * Вывод списка сетей пользователя
      *
-    public function listWebAction() :Response
+     */
+    public function listWebAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -61,14 +60,14 @@ class WebController extends Controller
             'webs' => $webs
         ]);
         return $response;
-    }*/
+    }
 
-    public function peerAddWebAction() :Response
+    public function peerAddWebAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $webs = Web::findAllByOwnerId($this->user->id);
-        if(count($webs) > 0) {
+        if (count($webs) > 0) {
             $response->message = "Привязать сетку:";
             foreach ($webs as $web) {
                 $response->setButtonRow(["Изменить сетку на {$web['name']}", "web_connect {$web['id']}", Response::POSITIVE]);
@@ -85,11 +84,11 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         $web_id = intval($user_text);
         $web = new Web($web_id);
-        if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
-            if($this->peer->owner_id == $this->user->id || ($this->user->is_dev == 1)) {
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
+            if ($this->peer->owner_id == $this->user->id || ($this->user->is_dev == 1)) {
                 $this->peer->web_id = $web->id;
                 $id = $this->peer->save();
-                if($id)
+                if ($id)
                     $response->message = 'Успешно привязана';
                 else
                     $response->message = 'Ошибка!';
@@ -130,18 +129,17 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         $settings = json_decode(file_get_contents('config/settings.json'), true);
         $web = new Web($web_id);
-        if($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
+        if ($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
             $settingsWeb = $web->getSettings();
             $setsWeb = [];
             foreach ($settingsWeb as $setting)
                 $setsWeb[$setting['setting_id']] = $setting['value'];
-            $message = $this->render('web/settings',[
+            $message = $this->render('web/settings', [
                 'settings' => $settings,
                 'settingsWeb' => $setsWeb
             ]);
             $response->message = $message;
-        }
-        else
+        } else
             $response->message = 'Такой сетки не существует';
         return $response;
     }
@@ -151,17 +149,17 @@ class WebController extends Controller
         $data = explode(' ', $user_text);
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if(count($data) == 3) {
+        if (count($data) == 3) {
             $web = new Web($data[0]);
-            if($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
+            if ($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
                 $info = $web->setSetting($data[1], $data[2]);
-                if($info == 'error_type')
+                if ($info == 'error_type')
                     $response->message = 'Значение настройки указано неверно! (обычно 1 - включить, 0 - выключить)';
-                elseif($info == 'error_not_found')
+                elseif ($info == 'error_not_found')
                     $response->message = 'Настройка не найдена';
-                elseif($info)
+                elseif ($info)
                     $response->message = 'Успешно!';
-                elseif($response->message == '')
+                elseif ($response->message == '')
                     $response->message = 'Ошибка! Обратитесь к разработчику';
             } else
                 $response->message = 'Такой сетки не существует';
@@ -175,19 +173,19 @@ class WebController extends Controller
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $web = new Web($this->peer->web_id);
-        if($web->isExists()) {
-            if($this->user->id == $web->owner_id || $this->user->is_dev == 1 || $web->isAdmin($this->user)) {
+        if ($web->isExists()) {
+            if ($this->user->id == $web->owner_id || $this->user->is_dev == 1 || $web->isAdmin($this->user)) {
                 $peers = $web->getPeersIds();
                 $user = $this->getUserFromMessage($user_text);
-                if(get_class($user) == self::$classUser)
-                    if($user->isExists()) {
+                if (get_class($user) == self::$classUser)
+                    if ($user->isExists()) {
                         if ($this->user->id == $web->owner_id || $this->user->is_dev == 1 || $web->isAdmin($this->user)) {
                             $web->unsetBan($user->id);
                             foreach ($peers as $peer) {
                                 $peer_id = $peer['id'];
                                 if ($this->user->is_dev == 1)
                                     $nick = 'Разработчиком бота';
-                                elseif($this->user->id == $web->owner_id)
+                                elseif ($this->user->id == $web->owner_id)
                                     $nick = 'Создателем сетки';
                                 else
                                     $nick = 'Администратором сетки';
@@ -207,20 +205,19 @@ class WebController extends Controller
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $web = new Web($this->peer->web_id);
-        if($web->isExists()) {
+        if ($web->isExists()) {
             if ($this->user->id == $web->owner_id || $this->user->is_dev == 1 || $web->isAdmin($this->user)) {
                 $peers = $web->getPeersIds();
                 $user = new User(0);
                 $obj = $this->getUserFromMessage($user_text);
                 $id = $this->getIdFromMessage($object);
-                if($obj != false && get_class($obj) == self::$classUser) {
+                if ($obj != false && get_class($obj) == self::$classUser) {
                     $user = $obj;
                 }
                 if ($user_text == '' && $id > 0) {
                     $dev = new User($id);
                     if ($dev->is_dev == 0 && $dev->isExists()) {
-                        if($dev->id != $web->owner_id)
-                        {
+                        if ($dev->id != $web->owner_id) {
                             $web->count_globans = $web->count_globans + 1;
                             $web->save();
                             $web->setBan($id);
@@ -229,19 +226,18 @@ class WebController extends Controller
                                 $userPeer = UserPeer::findsByPeerAndUser($id, $peer_id);
                                 if ($this->user->is_dev == 1)
                                     $nick = 'Разработчика бота';
-                                elseif($this->user->id == $web->owner_id)
+                                elseif ($this->user->id == $web->owner_id)
                                     $nick = 'Создателя сетки';
                                 else
                                     $nick = 'Администратора сетки';
                                 $this->vk->messagesSend($peer_id, "[id{$object['message']['reply_message']['from_id']}|Пользователь] получил глобальный бан от [id{$this->user->id}|{$nick}] из беседы {$this->peer->title}.");
                                 $this->vk->messagesRemoveChatUser($peer_id, $userPeer->user_id);
                             }
-                        }
-                        else
+                        } else
                             $response->message = "Не могу забанить создателя сетки!";
                     } else
                         $response->message = "Не могу забанить СОЗДАТЕЛЯ БОТА!";
-                } elseif($user->isExists() && $user->isUser()) {
+                } elseif ($user->isExists() && $user->isUser()) {
                     if ($user->is_dev == 0) {
                         $web->count_globans = $web->count_globans + 1;
                         $web->save();
@@ -250,7 +246,7 @@ class WebController extends Controller
                             $peer_id = $peer['id'];
                             if ($this->user->is_dev == 1)
                                 $nick = 'Разработчика бота';
-                            elseif($this->user->id == $web->owner_id)
+                            elseif ($this->user->id == $web->owner_id)
                                 $nick = 'Создателя сетки';
                             else
                                 $nick = 'Администратора сетки';
@@ -259,10 +255,8 @@ class WebController extends Controller
                         }
                     } else
                         $response->message = "Не могу забанить СОЗДАТЕЛЯ БОТА!";
-                }
-                else
-                {
-                    if($user_text != '' && intval($user_text) == $user_text) {
+                } else {
+                    if ($user_text != '' && intval($user_text) == $user_text) {
                         $user = new User();
                         $user->id = intval($user_text);
                         $user->save();
@@ -274,14 +268,13 @@ class WebController extends Controller
                             $peer_id = $peer['id'];
                             if ($this->user->is_dev == 1)
                                 $nick = 'Разработчика бота';
-                            elseif($this->user->id == $web->owner_id)
+                            elseif ($this->user->id == $web->owner_id)
                                 $nick = 'Создателя сетки';
                             else
                                 $nick = 'Администратора сетки';
                             $this->vk->messagesSend($peer_id, "[id{$user->id}|Пользователь] получил глобальный бан от [id{$this->user->id}|{$nick}] из беседы {$this->peer->title}.");
                         }
-                    }
-                    elseif($user_text != '')
+                    } elseif ($user_text != '')
                         $response->message = 'Не могу найти или создать данного пользователя, попробуйте указать только id';
                 }
             } else
@@ -294,27 +287,27 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text != '') {
+        if ($user_text != '') {
             $web = new Web($this->peer->web_id);
             if ($web->isExists()) {
-                if($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
+                if ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
                     $web = new Web($this->peer->web_id);
                     $peers = $web->getPeersIds();
                     foreach ($peers as $peer) {
                         $peer_id = $peer['id'];
                         if ($this->user->is_dev == 1) $nick = 'Разработчика бота'; else $nick = 'Администратора сетки';
-                        if(isset($object['message']['attachments'])) {
+                        if (isset($object['message']['attachments'])) {
                             $attach = $object['message']['attachments'][0];
                             $type = $attach['type'];
-                            if(isset($attach[$type]['from_id']))
+                            if (isset($attach[$type]['from_id']))
                                 $owner_id = $attach[$type]['from_id'];
                             elseif (isset($attach[$type]['owner_id']))
                                 $owner_id = $attach[$type]['owner_id'];
                             else
                                 $owner_id = 0;
-                            $this->vk->messagesSend($peer_id, $user_text. PHP_EOL . "P.s. Из беседы {$this->peer->title} от [id{$this->user->id}|$nick]", "{$attach['type']}{$owner_id}_{$attach[$type]['id']}");
+                            $this->vk->messagesSend($peer_id, $user_text . PHP_EOL . "P.s. Из беседы {$this->peer->title} от [id{$this->user->id}|$nick]", "{$attach['type']}{$owner_id}_{$attach[$type]['id']}");
                         } else
-                            $this->vk->messagesSend($peer_id, $user_text. PHP_EOL . "P.s. Из беседы {$this->peer->title} от [id{$this->user->id}|$nick]");
+                            $this->vk->messagesSend($peer_id, $user_text . PHP_EOL . "P.s. Из беседы {$this->peer->title} от [id{$this->user->id}|$nick]");
                     }
                     $response->message = 'Глобальное сообщение отправлено';
                 } else
@@ -330,12 +323,12 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text)) {
+        if ($user_text == intval($user_text)) {
             $web = new Web(intval($user_text));
-            if($web->isExists() && $web->owner_id == $this->user->id) {
+            if ($web->isExists() && $web->owner_id == $this->user->id) {
                 $res = Peer::removeWeb($web->id);
                 $web->delete();
-                if($web !== false)
+                if ($web !== false)
                     $response->message = 'Успешно!';
                 else
                     $response->message = 'Ошибка! Обратитесь к разработчику!';
@@ -350,14 +343,14 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text)) {
+        if ($user_text == intval($user_text)) {
             $web = new Web(intval($user_text));
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
                 $peers = Peer::findByWeb($web->id);
-                $list = "Список бесед привязанных к сетке:".PHP_EOL;
+                $list = "Список бесед привязанных к сетке:" . PHP_EOL;
                 $number = 1;
                 foreach ($peers as $peer) {
-                    $list .= "$number) {$peer['title']}".PHP_EOL;
+                    $list .= "$number) {$peer['title']}" . PHP_EOL;
                     $number++;
                 }
                 $response->message = $list;
@@ -372,9 +365,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -384,7 +377,7 @@ class WebController extends Controller
             }
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -400,9 +393,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id, 1);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -412,7 +405,7 @@ class WebController extends Controller
             }
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id, 1);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -428,9 +421,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id, 7);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -440,7 +433,7 @@ class WebController extends Controller
             }
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $users = $this->userPeer->topInfoWeb($web->id, 7);
                 $message = $this->render('top/list', [
                     'users' => $users,
@@ -456,9 +449,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists()  && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $peers = $this->userPeer->topInfoPeer($web->id);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -469,7 +462,7 @@ class WebController extends Controller
                 $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && ($this->userPeer->status >= 4 || $this->user->is_dev == 1) || $web->isAdmin($this->user)) {
+            if ($web->isExists() && ($this->userPeer->status >= 4 || $this->user->is_dev == 1) || $web->isAdmin($this->user)) {
                 $peers = $this->userPeer->topInfoPeer($web->id);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -486,9 +479,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists()  && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $peers = $this->userPeer->topInfoPeer($web->id, 1);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -499,7 +492,7 @@ class WebController extends Controller
                 $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists()  && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $peers = $this->userPeer->topInfoPeer($web->id, 1);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -516,9 +509,9 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($user_text == intval($user_text) && $user_text != '') {
+        if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if($web->isExists()  && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $peers = $this->userPeer->topInfoPeer($web->id, 7);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -529,7 +522,7 @@ class WebController extends Controller
                 $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if($web->isExists()  && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            if ($web->isExists() && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
                 $peers = $this->userPeer->topInfoPeer($web->id, 7);
                 $message = $this->render('top/peers_list', [
                     'peers' => $peers,
@@ -546,39 +539,28 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($this->peer->web_id > 0)
-        {
+        if ($this->peer->web_id > 0) {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && $web->owner_id == $this->user->id) {
+            if ($web->isExists() && $web->owner_id == $this->user->id) {
                 $obj = $this->getUserFromMessage($user_text);
-                if(get_class($obj) == self::$classUser)
-                {
+                if (get_class($obj) == self::$classUser) {
                     $user = $obj;
-                }
-                else
-                {
+                } else {
                     $id = $this->getIdFromMessage($object);
-                    if($id > 0)
-                    {
+                    if ($id > 0) {
                         $user = new User($id);
                     }
                 }
-                if(isset($user) && $user->isExists())
-                {
+                if (isset($user) && $user->isExists()) {
                     $web = new Web($this->peer->web_id);
                     $res = $web->setAdmin($user);
                     $response->message = 'Успешно!';
-                }
-                else
+                } else
                     $response->message = 'неудачно';
-            }
-            else
-            {
+            } else {
                 $response->message = 'Вы не создатель сетки';
             }
-        }
-        else
-        {
+        } else {
             $response->message = 'Сетка не привязана';
         }
         return $response;
@@ -588,39 +570,28 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if($this->peer->web_id > 0)
-        {
+        if ($this->peer->web_id > 0) {
             $web = new Web($this->peer->web_id);
-            if($web->isExists() && $web->owner_id == $this->user->id) {
+            if ($web->isExists() && $web->owner_id == $this->user->id) {
                 $obj = $this->getUserFromMessage($user_text);
-                if(get_class($obj) == self::$classUser)
-                {
+                if (get_class($obj) == self::$classUser) {
                     $user = $obj;
-                }
-                else
-                {
+                } else {
                     $id = $this->getIdFromMessage($object);
-                    if($id > 0)
-                    {
+                    if ($id > 0) {
                         $user = new User($id);
                     }
                 }
-                if(isset($user) && $user->isExists())
-                {
+                if (isset($user) && $user->isExists()) {
                     $web = new Web($this->peer->web_id);
                     $res = $web->unsetAdmin($user);
                     $response->message = 'Успешно!';
-                }
-                else
+                } else
                     $response->message = 'неудачно';
-            }
-            else
-            {
+            } else {
                 $response->message = 'Вы не создатель сетки';
             }
-        }
-        else
-        {
+        } else {
             $response->message = 'Сетка не привязана';
         }
         return $response;
@@ -632,7 +603,7 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         $web = Web::findById($this->peer->web_id);
         $list = '';
-        if($web !== false) {
+        if ($web !== false) {
             if ($web->owner_id == $this->user->id || $this->user->is_dev || $web->isAdmin($this->user)) {
                 if ($user_text == '') {
                     $peers = Peer::findByWeb($this->peer->web_id);
@@ -659,11 +630,11 @@ class WebController extends Controller
                         }
                     }
                 }
+                $response->message = $list;
             } else {
                 $response->message = "Вы не создатель данной сетки.";
             }
         }
-        $response->message = $list;
         return $response;
     }
 

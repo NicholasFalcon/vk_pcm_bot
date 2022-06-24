@@ -369,7 +369,7 @@ class Router
             if($user->isExists() && $peer->isExists()) {
                 $userPeer = UserPeer::findsByPeerAndUser($user->id, $peer->id);
                 $controller = new CallbackController($this->vk, $user, $peer, $userPeer);
-                $response = $controller->run($callback['action'], json_decode($callback['params'], true));
+                $response = $controller->run($callback['action'].'Action', json_decode($callback['params'], true));
                 $response->useAction($this->vk);
             }
         }

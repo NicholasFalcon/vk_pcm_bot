@@ -343,21 +343,23 @@ class WebController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text)) {
+        if ($user_text != '' && $user_text == intval($user_text)) {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
-                $peers = Peer::findByWeb($web->id);
-                $list = "Список бесед привязанных к сетке:" . PHP_EOL;
-                $number = 1;
-                foreach ($peers as $peer) {
-                    $list .= "$number) {$peer['title']}" . PHP_EOL;
-                    $number++;
-                }
-                $response->message = $list;
-            } else
-                $response->message = 'Вы не создавали данную сетку!';
         } else
-            $response->message = 'Номер сетки введён неправильно!';
+        {
+            $web = new Web($this->peer->web_id);
+        }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
+            $peers = Peer::findByWeb($web->id);
+            $list = "Список бесед привязанных к сетке:" . PHP_EOL;
+            $number = 1;
+            foreach ($peers as $peer) {
+                $list .= "$number) {$peer['title']}" . PHP_EOL;
+                $number++;
+            }
+            $response->message = $list;
+        } else
+            $response->message = 'Вы не создавали данную сетку!';
         return $response;
     }
 
@@ -367,24 +369,16 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей за все время по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей за все время по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
+        }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $users = $this->userPeer->topInfoWeb($web->id);
+            $message = $this->render('top/list', [
+                'users' => $users,
+                'title' => 'Топ пользователей за все время по всей сетке(символы | сообщения):'
+            ]);
+            $response->message = $message;
         }
         return $response;
     }
@@ -395,24 +389,16 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id, 1);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей за день по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id, 1);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей за день по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
+        }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $users = $this->userPeer->topInfoWeb($web->id, 1);
+            $message = $this->render('top/list', [
+                'users' => $users,
+                'title' => 'Топ пользователей за день по всей сетке(символы | сообщения):'
+            ]);
+            $response->message = $message;
         }
         return $response;
     }
@@ -423,24 +409,16 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id, 7);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей на этой недели по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $users = $this->userPeer->topInfoWeb($web->id, 7);
-                $message = $this->render('top/list', [
-                    'users' => $users,
-                    'title' => 'Топ пользователей на этой недели по всей сетке(символы | сообщения):'
-                ]);
-                $response->message = $message;
-            }
+        }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $users = $this->userPeer->topInfoWeb($web->id, 7);
+            $message = $this->render('top/list', [
+                'users' => $users,
+                'title' => 'Топ пользователей на этой недели по всей сетке(символы | сообщения):'
+            ]);
+            $response->message = $message;
         }
         return $response;
     }
@@ -451,27 +429,18 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $peers = $this->userPeer->topInfoPeer($web->id);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за всё время (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($this->userPeer->status >= 4 || $this->user->is_dev == 1) || $web->isAdmin($this->user)) {
-                $peers = $this->userPeer->topInfoPeer($web->id);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за всё время (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $peers = $this->userPeer->topInfoPeer($web->id);
+            $message = $this->render('top/peers_list', [
+                'peers' => $peers,
+                'title' => 'Топ 15 бесед в сетке за всё время (символы | сообщения):'
+            ]);
+            $response->message = $message;
+        } else
+            $response->message = 'Такой сетки не существует!';
         return $response;
     }
 
@@ -481,27 +450,18 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $peers = $this->userPeer->topInfoPeer($web->id, 1);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за день (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $peers = $this->userPeer->topInfoPeer($web->id, 1);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за день (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $peers = $this->userPeer->topInfoPeer($web->id, 1);
+            $message = $this->render('top/peers_list', [
+                'peers' => $peers,
+                'title' => 'Топ 15 бесед в сетке за день (символы | сообщения):'
+            ]);
+            $response->message = $message;
+        } else
+            $response->message = 'Такой сетки не существует!';
         return $response;
     }
 
@@ -511,27 +471,18 @@ class WebController extends Controller
         $response->peer_id = $this->peer->id;
         if ($user_text == intval($user_text) && $user_text != '') {
             $web = new Web(intval($user_text));
-            if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $peers = $this->userPeer->topInfoPeer($web->id, 7);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за неделю (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         } else {
             $web = new Web($this->peer->web_id);
-            if ($web->isExists() && ($this->userPeer->status >= 4 || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
-                $peers = $this->userPeer->topInfoPeer($web->id, 7);
-                $message = $this->render('top/peers_list', [
-                    'peers' => $peers,
-                    'title' => 'Топ 15 бесед в сетке за неделю (символы | сообщения):'
-                ]);
-                $response->message = $message;
-            } else
-                $response->message = 'Такой сетки не существует!';
         }
+        if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user))) {
+            $peers = $this->userPeer->topInfoPeer($web->id, 7);
+            $message = $this->render('top/peers_list', [
+                'peers' => $peers,
+                'title' => 'Топ 15 бесед в сетке за неделю (символы | сообщения):'
+            ]);
+            $response->message = $message;
+        } else
+            $response->message = 'Такой сетки не существует!';
         return $response;
     }
 
@@ -633,6 +584,21 @@ class WebController extends Controller
                 $response->message = $list;
             } else {
                 $response->message = "Вы не создатель данной сетки.";
+            }
+        }
+        return $response;
+    }
+
+    public function withdrawAction(): Response
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        $web = new Web($this->peer->web_id);
+        if ($this->user->is_dev == 1 || $this->user->id == $web->owner_id || $this->user->id == $this->peer->owner_id) {
+            if ($this->peer->web_id != 0) {
+                $this->peer->web_id = 0;
+                $this->peer->save();
+                $response->message = "Беседа была отвязана от сетки {$web->name}!";
             }
         }
         return $response;

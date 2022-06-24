@@ -12,15 +12,15 @@ Routing::group('сетка', function () {
     Routing::setForPeer('отвязать', WebController::class, 'withdraw');
     Routing::setForPeer('настройки :user_text', WebController::class, 'webSettings');
     Routing::setForPeer('настройка :user_text', WebController::class, 'webChangeSetting');
-    Routing::setForPeer('беседы', WebController::class, 'peerList');
+    Routing::setForPeer('беседы :user_text', WebController::class, 'peerList');
     Routing::group('топ', function () {
-        Routing::setForPeer('', WebController::class, 'all');
-        Routing::setForPeer('дня', WebController::class, 'day');
-        Routing::setForPeer('недели', WebController::class, 'week');
-        Routing::group('топ', function () {
-            Routing::setForPeer('', WebController::class, 'peerAll');
-            Routing::setForPeer('дня', WebController::class, 'peerDay');
-            Routing::setForPeer('недели', WebController::class, 'peerWeek');
+        Routing::setForPeer('дня :user_text', WebController::class, 'day');
+        Routing::setForPeer('недели :user_text', WebController::class, 'week');
+        Routing::setForPeer(':user_text', WebController::class, 'all');
+        Routing::group('бесед', function () {
+            Routing::setForPeer('дня :user_text', WebController::class, 'peerDay');
+            Routing::setForPeer('недели :user_text', WebController::class, 'peerWeek');
+            Routing::setForPeer(':user_text', WebController::class, 'peerAll');
         });
     });
     Routing::setCommandForPeer('web_connect :user_text', WebController::class, 'connect');

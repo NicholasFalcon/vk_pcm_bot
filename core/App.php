@@ -144,7 +144,7 @@ class App
                     $newGroup = new Group();
                     $newGroup->id = $user['member_id'];
                     $groupData = self::$vk->groupsGetById(abs($user['member_id']));
-                    $groupData = $groupData['response']['groups'][0];
+                    $groupData = $groupData['response'][0];
                     $newGroup->name = $groupData['name'];
                     $newGroup->domain = $groupData['screen_name'];
                     $newGroup->save();

@@ -229,7 +229,7 @@ class Router
                         }
                     } elseif (!$peer->getSetting(App::S_USE_TRIGGERS)) {
                         $controller = new TriggerController($this->vk, $user, $peer, $userPeer);
-                        return $controller->run('getAction', $action);
+                        return $controller->getAction($action['object']);
                     }
                 }
             }

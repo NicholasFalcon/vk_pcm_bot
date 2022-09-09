@@ -97,12 +97,15 @@ class TriggerController extends Controller
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $name = App::replaceSpecialChars(($object['message']['text']));
-        $trigger = Trigger::findByCommand($name, $this->peer->id);
-        if ($trigger !== false)
+        if(isset($object['message']) && isset($object['message']['text']))
         {
-            $response->message = $trigger->text_trigger;
-            $response->attachment = $trigger->attach;
+            $name = App::replaceSpecialChars(($object['message']['text']));
+            $trigger = Trigger::findByCommand($name, $this->peer->id);
+            if ($trigger !== false)
+            {
+                $response->message = $trigger->text_trigger;
+                $response->attachment = $trigger->attach;
+            }
         }
         return $response;
     }

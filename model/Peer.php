@@ -3,6 +3,7 @@
 
 namespace model;
 
+use comboModel\UserPeer;
 use core\Model;
 use core\App;
 
@@ -175,5 +176,16 @@ class Peer extends Model
             ->where("`title` like '%$name%'")
             ->limit(5)
             ->query();
+    }
+
+    public function getAdmins()
+    {
+        $roles = Role::findAllByOwnerId($this->owner_id);
+        $roles = array_merge([['id' => Role::MAIN_ADMIN, 'title' => Role::MAIN_ADMIN_TITLE]], $roles);
+        foreach ($roles as &$role)
+        {
+            $role['users'] = UserPeer::findAllByPeerAndRole($this->id, $role['id']);
+        }
+        return $roles;
     }
 }

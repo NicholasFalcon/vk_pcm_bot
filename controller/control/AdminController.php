@@ -1051,4 +1051,22 @@ class AdminController extends Controller
         $this->peer->count_kick = $this->peer->count_kick + 1;
         $this->peer->save();
     }
+
+    public function getAdminsAction(): Response
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        $roles = $this->peer->getAdmins();
+        $response->message = '';
+        foreach ($roles as $role)
+        {
+            $response->message .= $role['title'].':'.PHP_EOL;
+            foreach ($role['users'] as $user)
+            {
+                $u = User::findById($user['user_id']);
+                $response->message .= "[id{$u->id}|{$u->last_name_nom} {$u->first_name_nom}]".PHP_EOL;
+            }
+        }
+        return $response;
+    }
 }

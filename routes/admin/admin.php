@@ -128,3 +128,7 @@ Routing::group('кто', function () {
         Routing::setForPeer('', AdminController::class, 'invitedBy');
     });
 });
+
+Routing::group('админы', function () {
+    Routing::setForPeer('беседы', AdminController::class, 'getAdmins');
+});

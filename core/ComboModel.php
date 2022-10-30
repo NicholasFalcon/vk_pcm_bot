@@ -104,6 +104,18 @@ class ComboModel
         return App::getPBase()->select()->from(static::$table)->where($where)->queryOne();
     }
 
+    protected static function findAllBy($columns)
+    {
+        $where = '';
+        foreach ($columns as $column => $value)
+        {
+            $value = addslashes($value);
+            $where .= "`$column` = '$value' and ";
+        }
+        $where = substr($where, 0, -5);
+        return App::getPBase()->select()->from(static::$table)->where($where)->query();
+    }
+
 //    public static function findAll($limit = false, $offset = false)
 //    {
 //        return App::getPBase()->select()->from(static::$table)->query();

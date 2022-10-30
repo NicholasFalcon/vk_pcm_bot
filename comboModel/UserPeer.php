@@ -51,6 +51,14 @@ class UserPeer extends ComboModel
         return false;
     }
 
+    public static function findAllByPeerAndRole($peer_id, $role_id)
+    {
+        return parent::findAllBy([
+            'role_id' => $role_id,
+            'peer_id' => $peer_id
+        ]);
+    }
+
     public static function SelectAll($peer_id)
     {
         return App::getPBase()

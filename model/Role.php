@@ -15,7 +15,9 @@ class Role extends Model
     static string $table = 'roles';
 
     public const USER = 1;
+    public const USER_TITLE = 'Участник';
     public const MAIN_ADMIN = 2;
+    public const MAIN_ADMIN_TITLE = 'Главный админ';
 
     public const TRIGGER_EDITOR_ACCESS = 1;
     public const KICK_ACCESS = 2;

@@ -12,6 +12,7 @@ use model\Web;
 use core\Response;
 use model\User;
 use core\App;
+use Swoole\Coroutine\Redis;
 
 class CoreController extends Controller
 {

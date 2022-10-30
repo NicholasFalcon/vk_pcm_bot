@@ -18,6 +18,7 @@ use Swoole\Process;
 class Router
 {
     private Vk $vk;
+    private $ts = 0;
     private array $processes = [];
     public int $timeStart = 0;
     private Routing $routing_peer;
@@ -33,6 +34,7 @@ class Router
         $this->commands_peer = new Routing(Routing::C_PEER);
         $this->routing_user = new Routing(Routing::USER);
         $this->commands_user = new Routing(Routing::C_USER);
+        $this->ts = file_get_contents('config/ts.data');;
     }
 
     public function start()
@@ -52,14 +54,15 @@ class Router
 
     public function check($longPollServer)
     {
-        $ts = file_get_contents('config/ts.data');
-        $dataLongPoll = $this->vk->checkUpdateLongPollServer($longPollServer['response']['server'], $longPollServer['response']['key'], $ts);
+        $dataLongPoll = $this->vk->checkUpdateLongPollServer($longPollServer['response']['server'], $longPollServer['response']['key'], $this->ts);
         if(!isset($dataLongPoll['ts']))
         {
             file_put_contents('longpoll.log', 'longpoll server error: '.print_r($dataLongPoll, 1).PHP_EOL, FILE_APPEND);
             return false;
         }
-        file_put_contents('config/ts.data', $dataLongPoll['ts']);
+
+        $this->ts = $dataLongPoll['ts'];
+        file_put_contents('config/ts.data', $this->ts);
         foreach ($dataLongPoll['updates'] as $action)
         {
 

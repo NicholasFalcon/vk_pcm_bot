@@ -107,14 +107,12 @@ class Routing
         $id = App::$group_id;
         $path = mb_strtolower(trim(preg_replace("~\[club$id\|.*]~", '', $path)));
         if ($this->type == static::PEER) {
-            $routes = static::$routes;
-            return $this->checkRoute($path, $routes);
+            return $this->checkRoute($path, static::$routes);
         } elseif ($this->type == static::C_PEER) {
             $commands = static::$commands;
             return $this->checkCommands($path, $commands);
         } elseif ($this->type == static::USER) {
-            $routes = static::$routes_user;
-            return $this->checkRoute($path, $routes);
+            return $this->checkRoute($path, static::$routes_user);
         } elseif ($this->type == static::C_USER) {
             $commands = static::$commands_user;
             return $this->checkCommands($path, $commands);

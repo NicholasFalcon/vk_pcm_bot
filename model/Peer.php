@@ -3,6 +3,7 @@
 
 namespace model;
 
+use comboModel\UserPeer;
 use core\Model;
 use core\App;
 
@@ -174,6 +175,15 @@ class Peer extends Model
             ->from(static::$table)
             ->where("`title` like '%$name%'")
             ->limit(5)
+            ->query();
+    }
+
+    public function getUsersByRole($role_id)
+    {
+        return App::getPBase()
+            ->select('user_id')
+            ->from(UserPeer::$table)
+            ->where('role_id = '.intval($role_id))
             ->query();
     }
 }

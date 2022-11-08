@@ -3,6 +3,12 @@
 use controller\control\AdminController;
 use core\Routing;
 
+Routing::setCommandForPeer('edit_user_role :role_id :user_id', AdminController::class, 'changeUserRole');
+
+Routing::group('роль', function () {
+    Routing::setForPeer(':user_text', AdminController::class, 'editRole');
+});
+
 Routing::group('беседа', function () {
     Routing::group('инфо', function () {
         Routing::setForPeer('', AdminController::class, 'ChatInfo');
@@ -51,8 +57,6 @@ Routing::group('беседа', function () {
     Routing::group('мут', function () {
         Routing::setForPeer(':user_text', AdminController::class, 'MutePeer');
     });
-});
-Routing::group('беседа', function () {
     Routing::setForPeer('-мут', AdminController::class, 'MutePeerRemove');
 });
 Routing::group('пред', function () {
@@ -127,4 +131,8 @@ Routing::group('кто', function () {
     Routing::group('пригласил', function () {
         Routing::setForPeer('', AdminController::class, 'invitedBy');
     });
+});
+
+Routing::group('админы', function () {
+    Routing::setForPeer('беседы',AdminController::class, 'getAdmins');
 });

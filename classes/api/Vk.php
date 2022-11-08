@@ -308,8 +308,8 @@ sitepage — страница сайта, на котором установле
     {
         $request_params = [
             'peer_id' => $peer_id,
-            'offset' => $offset,
-            'count' => $count,
+//            'offset' => $offset,
+//            'count' => $count,
             'v' => $this->version,
             'access_token' => $this->token
         ];

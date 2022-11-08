@@ -178,8 +178,8 @@ class Routing
                     return ['error' => 'routing', 'msg' => 'Путь не найден'];
                 }
             }
-            $pattern = trim(str_replace($elem, '', $pattern));
-            $path = trim(str_replace($value, '', $path));
+            $pattern = trim(substr($pattern, mb_strlen($elem) + 1));
+            $path = trim(substr($path, mb_strlen($value) + 1));
         }
         if ($path != '') {
             return ['error' => 'bad_routing', 'msg' => 'Обнаружен текст после команды, где он не ожидается'];
@@ -226,8 +226,8 @@ class Routing
                 return ['error' => 'empty_var', 'msg' => "Переменная '$var_name' не указана"];
             }
             $params[$var_name] = $value;
-            $pattern = trim(str_replace($elem, '', $pattern));
-            $path = trim(str_replace($value, '', $path));
+            $pattern = trim(substr($pattern, mb_strlen($elem) + 1));
+            $path = trim(substr($path, mb_strlen($value) + 1));
         }
         $route['params'] = $params;
         return $route;

@@ -43,22 +43,16 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function changeUserRoleAction($user_text)
+    public function changeUserRoleAction($role_id, $user_id)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $vars = explode(' ', $user_text);
-        if (count($vars) != 2) {
-            $response->message = 'Что-то пошло не так';
-            return $response;
-        }
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if ($role === false) {
             $response->message = 'Роль не найдена, скорее всего вы ее удалили';
             return $response;
         }
-        $userPeer = UserPeer::findsByPeerAndUser(intval($vars[1]), $this->peer->id);
+        $userPeer = UserPeer::findsByPeerAndUser(intval($user_id), $this->peer->id);
         if ($userPeer === false) {
             $response->message = 'Пользователь не найден';
             return $response;
@@ -870,37 +864,35 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function ChatInfoAction($user_text): Response
+    public function ChatInfoAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev) {
-            if ($user_text == '') {
-                $days = floor((time() - $this->peer->days) / 86400);
-                $count = count(UserPeer::getAdmins($this->peer->id));
-                $color = "positive";
-                if ($this->peer->getSetting(18) == 1)
-                    $color = "Зелёный";
-                elseif ($this->peer->getSetting(18) == 2)
-                    $color = "Красный";
-                elseif ($this->peer->getSetting(18) == 3)
-                    $color = "Белый";
-                elseif ($this->peer->getSetting(18) == 4)
-                    $color = "Синий";
-                $countLeave = abs($this->peer->users_count_old - $this->peer->users_count);
-                $response->message = "Беседа {$this->peer->title}"
-                    . PHP_EOL . "Id беседы: " . ($this->peer->id - App::$peerStartNumber)
-                    . PHP_EOL . "Было участников: {$this->peer->users_count_old} Стало: {$this->peer->users_count}"
-                    . PHP_EOL . "Админов: $count"
-                    . PHP_EOL . "Беседе $days дней"
-                    . PHP_EOL . "Настройки беседы (0 выкл, 1 вкл)"
-                    . PHP_EOL . "Автокик: {$this->peer->getSetting(9)}"
-                    . PHP_EOL . "Ссылки: {$this->peer->getSetting(10)}"
-                    . PHP_EOL . "Ошибки чата: {$this->peer->getSetting(16)}"
-                    . PHP_EOL . "Цвет кнопок: $color"
-                    . PHP_EOL . "Количество киков за сегодня: {$this->peer->count_kick}"
-                    . PHP_EOL . "Вышли: $countLeave";
-            }
+            $days = floor((time() - $this->peer->days) / 86400);
+            $count = count(UserPeer::getAdmins($this->peer->id));
+            $color = "positive";
+            if ($this->peer->getSetting(18) == 1)
+                $color = "Зелёный";
+            elseif ($this->peer->getSetting(18) == 2)
+                $color = "Красный";
+            elseif ($this->peer->getSetting(18) == 3)
+                $color = "Белый";
+            elseif ($this->peer->getSetting(18) == 4)
+                $color = "Синий";
+            $countLeave = abs($this->peer->users_count_old - $this->peer->users_count);
+            $response->message = "Беседа {$this->peer->title}"
+                . PHP_EOL . "Id беседы: " . ($this->peer->id - App::$peerStartNumber)
+                . PHP_EOL . "Было участников: {$this->peer->users_count_old} Стало: {$this->peer->users_count}"
+                . PHP_EOL . "Админов: $count"
+                . PHP_EOL . "Беседе $days дней"
+                . PHP_EOL . "Настройки беседы (0 выкл, 1 вкл)"
+                . PHP_EOL . "Автокик: {$this->peer->getSetting(9)}"
+                . PHP_EOL . "Ссылки: {$this->peer->getSetting(10)}"
+                . PHP_EOL . "Ошибки чата: {$this->peer->getSetting(16)}"
+                . PHP_EOL . "Цвет кнопок: $color"
+                . PHP_EOL . "Количество киков за сегодня: {$this->peer->count_kick}"
+                . PHP_EOL . "Вышли: $countLeave";
         } else {
             $response->message = "Вы не администратор данной беседы!";
         }
@@ -1050,5 +1042,31 @@ class AdminController extends Controller
         $this->peer->users_count = $this->peer->users_count - 1;
         $this->peer->count_kick = $this->peer->count_kick + 1;
         $this->peer->save();
+    }
+
+    public function getAdminsAction()
+    {
+        $response = new Response();
+        $response->peer_id = $this->peer->id;
+        $response->message = '';
+        $roles = $this->user->getRoles();
+        foreach ($roles as $role)
+        {
+            if($role['id'] > 1)
+            {
+                $response->message .= $role['title'].':'.PHP_EOL;
+                $users = $this->peer->getUsersByRole($role['id']);
+                foreach ($users as $item)
+                {
+                    $user = User::findById($item['user_id']);
+                    if($user)
+                    {
+                        $response->message .= $user->getFullName().PHP_EOL;
+                    }
+                }
+                $response->message .= PHP_EOL;
+            }
+        }
+        return $response;
     }
 }

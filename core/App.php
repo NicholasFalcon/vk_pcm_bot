@@ -100,7 +100,8 @@ class App
 
     public static function updateUsers($peer)
     {
-        $users = self::$vk->messagesGetConversationMembers($peer->id)['response']['items'];
+        $apiRequestUsers = self::$vk->messagesGetConversationMembers($peer->id);
+        $users = $apiRequestUsers['response']['items'];
         $curUsers = UserPeer::getUsersActive($peer->id);
         $curGroups = Group::getGroupsActive($peer->id);
         foreach ($users as $user) {
@@ -144,7 +145,7 @@ class App
                     $newGroup = new Group();
                     $newGroup->id = $user['member_id'];
                     $groupData = self::$vk->groupsGetById(abs($user['member_id']));
-                    $groupData = $groupData['response']['groups'][0];
+                    $groupData = $groupData['response'][0];
                     $newGroup->name = $groupData['name'];
                     $newGroup->domain = $groupData['screen_name'];
                     $newGroup->save();

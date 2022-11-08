@@ -63,6 +63,10 @@ class Router
 
         $this->ts = $dataLongPoll['ts'];
         file_put_contents('config/ts.data', $this->ts);
+        if(!isset($dataLongPoll['updates']))
+        {
+            return true;
+        }
         foreach ($dataLongPoll['updates'] as $action)
         {
 

@@ -220,4 +220,13 @@ class User extends Model
         }
         return trim($name)==$name?$name:$this->id;
     }
+
+    public function getRoles()
+    {
+        return App::getPBase()
+            ->select()
+            ->from(Role::$table)
+            ->where('owner_id in ('.implode(',', [0, $this->id]).')')
+            ->query();
+    }
 }

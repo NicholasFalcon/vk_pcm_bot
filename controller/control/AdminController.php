@@ -1044,27 +1044,19 @@ class AdminController extends Controller
         $this->peer->save();
     }
 
-    public function getAdminsAction()
+    public function getAdminsAction(): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
+        $roles = $this->peer->getAdmins();
         $response->message = '';
-        $roles = $this->user->getRoles();
         foreach ($roles as $role)
         {
-            if($role['id'] > 1)
+            $response->message .= $role['title'].':'.PHP_EOL;
+            foreach ($role['users'] as $user)
             {
-                $response->message .= $role['title'].':'.PHP_EOL;
-                $users = $this->peer->getUsersByRole($role['id']);
-                foreach ($users as $item)
-                {
-                    $user = User::findById($item['user_id']);
-                    if($user)
-                    {
-                        $response->message .= $user->getFullName().PHP_EOL;
-                    }
-                }
-                $response->message .= PHP_EOL;
+                $u = User::findById($user['user_id']);
+                $response->message .= "[id{$u->id}|{$u->last_name_nom} {$u->first_name_nom}]".PHP_EOL;
             }
         }
         return $response;

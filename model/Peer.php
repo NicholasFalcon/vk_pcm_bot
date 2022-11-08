@@ -178,6 +178,17 @@ class Peer extends Model
             ->query();
     }
 
+    public function getAdmins()
+    {
+        $roles = Role::findAllByOwnerId($this->owner_id);
+        $roles = array_merge([['id' => Role::MAIN_ADMIN, 'title' => Role::MAIN_ADMIN_TITLE]], $roles);
+        foreach ($roles as &$role)
+        {
+            $role['users'] = UserPeer::findAllByPeerAndRole($this->id, $role['id']);
+        }
+        return $roles;
+    }
+
     public function getUsersByRole($role_id)
     {
         return App::getPBase()

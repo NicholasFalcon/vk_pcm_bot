@@ -134,5 +134,5 @@ Routing::group('кто', function () {
 });
 
 Routing::group('админы', function () {
-    Routing::setForPeer('беседы',AdminController::class, 'getAdmins');
+    Routing::setForPeer('беседы', AdminController::class, 'getAdmins');
 });

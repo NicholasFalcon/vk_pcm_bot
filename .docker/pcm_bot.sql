@@ -402,3 +402,17 @@ create table roles_access
 
 create index roles_access_role_id_access_id_index
     on roles_access (role_id, access_id);
+
+create table rp_text
+(
+    id      int auto_increment,
+    name    varchar(100)       not null,
+    m_text  varchar(255)       null,
+    f_text  varchar(255)       null,
+    on_body smallint default 0 null,
+    constraint rp_text_id_uindex
+        unique (id)
+);
+
+alter table rp_text
+    add primary key (id);

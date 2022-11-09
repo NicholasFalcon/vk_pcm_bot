@@ -1056,7 +1056,7 @@ class AdminController extends Controller
             foreach ($role['users'] as $user)
             {
                 $u = User::findById($user['user_id']);
-                $response->message .= "[id{$u->id}|{$u->last_name_nom} {$u->first_name_nom}]".PHP_EOL;
+                $response->message .= $u->getFullName().PHP_EOL;
             }
         }
         return $response;

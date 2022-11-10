@@ -30,12 +30,11 @@ class WebController extends Controller
         return $response;
     }
 
-    public function editAction($user_text): Response
+    public function editAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $web_id = intval($user_text);
-        $web = Web::findById($web_id);
+        $web = Web::findById(intval($web_id));
         if($web === false)
         {
             $response->message = 'Ошибка системы, скорее всего данная сетка уже удалена';
@@ -51,12 +50,11 @@ class WebController extends Controller
         return $response;
     }
 
-    public function deleteAction($user_text): Response
+    public function deleteAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $web_id = intval($user_text);
-        $web = Web::findById($web_id);
+        $web = Web::findById(intval($web_id));
         if($web === false)
         {
             return $response;
@@ -66,12 +64,11 @@ class WebController extends Controller
         return $response;
     }
 
-    public function titleAction($user_text): Response
+    public function titleAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $web_id = intval($user_text);
-        $web = Web::findById($web_id);
+        $web = Web::findById(intval($web_id));
         if($web === false)
         {
             $response->message = 'Сетка не обнаружена, скорее всего она уже удалена';
@@ -83,12 +80,11 @@ class WebController extends Controller
         return $response;
     }
 
-    public function addAdminAction($user_text): Response
+    public function addAdminAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $web_id = intval($user_text);
-        $web = Web::findById($web_id);
+        $web = Web::findById(intval($web_id));
         if($web === false)
         {
             $response->message = 'Сетка не обнаружена, скорее всего она уже удалена';
@@ -100,12 +96,11 @@ class WebController extends Controller
         return $response;
     }
 
-    public function delAdminAction($user_text): Response
+    public function delAdminAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $web_id = intval($user_text);
-        $web = Web::findById($web_id);
+        $web = Web::findById(intval($web_id));
         if($web === false)
         {
             $response->message = 'Сетка не обнаружена, скорее всего она уже удалена';

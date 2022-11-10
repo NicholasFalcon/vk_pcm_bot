@@ -83,14 +83,12 @@ Routing::group('созвать', function () {
 Routing::group('преды', function () {
     Routing::setForPeer('', AdminController::class, 'allWarning');
 });
-Routing::group('молчуны', function () {
-    Routing::setForPeer('', AdminController::class, 'sleepers');
-});
 Routing::group('бан', function () {
     Routing::group('лист', function () {
         Routing::setForPeer('', AdminController::class, 'BanList');
     });
 });
+Routing::setForPeer('молчуны', AdminController::class, 'sleepers');
 Routing::group('кик', function () {
     Routing::group('собачек', function () {
         Routing::setForPeer('', AdminController::class, 'KickDeactivated');

@@ -773,7 +773,8 @@ class AdminController extends Controller
             if (!empty($users)) {
                 $message = $this->render('top/inactive', [
                     'userInfo' => $users,
-                    'title' => 'Спящие пользователи:'
+                    'title' => 'Спящие пользователи:',
+                    'timeInactive' => 0
                 ]);
                 $response->message = $message;
             } else

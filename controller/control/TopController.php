@@ -11,18 +11,16 @@ use core\Response;
 
 class TopController extends Controller
 {
-    public function allAction($user_text)
+    public function allAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $users = $this->userPeer->topInfo();
-            $message = $this->render('top/list', [
-                'users' => $users,
-                'title' => 'Топ 20 пользователей в данной беседе за все время(символы | сообщения):'
-            ]);
-            $response->message = $message;
-        }
+        $users = $this->userPeer->topInfo();
+        $message = $this->render('top/list', [
+            'users' => $users,
+            'title' => 'Топ 20 пользователей в данной беседе за все время(символы | сообщения):'
+        ]);
+        $response->message = $message;
         return $response;
     }
 
@@ -64,33 +62,29 @@ class TopController extends Controller
         return $response;
     }
 
-    public function dayAction($user_text)
+    public function dayAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $users = $this->userPeer->topInfo(1);
-            $message = $this->render('top/list', [
-                'users' => $users,
-                'title' => 'Топ 20 пользователей в данной беседе за день(символы | сообщения):'
-            ]);
-            $response->message = $message;
-        }
+        $users = $this->userPeer->topInfo(1);
+        $message = $this->render('top/list', [
+            'users' => $users,
+            'title' => 'Топ 20 пользователей в данной беседе за день(символы | сообщения):'
+        ]);
+        $response->message = $message;
         return $response;
     }
 
-    public function weekAction($user_text)
+    public function weekAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '') {
-            $users = $this->userPeer->topInfo(7);
-            $message = $this->render('top/list', [
-                'users' => $users,
-                'title' => 'Топ 20 пользователей на этой неделе(символы | сообщения):'
-            ]);
-            $response->message = $message;
-        }
+        $users = $this->userPeer->topInfo(7);
+        $message = $this->render('top/list', [
+            'users' => $users,
+            'title' => 'Топ 20 пользователей на этой неделе(символы | сообщения):'
+        ]);
+        $response->message = $message;
         return $response;
     }
 }

@@ -78,11 +78,10 @@ class WebController extends Controller
         return $response;
     }
 
-    public function connectAction($user_text): Response
+    public function connectAction($web_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $web_id = intval($user_text);
         $web = new Web($web_id);
         if ($web->isExists() && ($web->owner_id == $this->user->id || ($this->user->is_dev == 1))) {
             if ($this->peer->owner_id == $this->user->id || ($this->user->is_dev == 1)) {
@@ -122,13 +121,19 @@ class WebController extends Controller
         return $response;
     }
 
-    public function webSettingsAction($user_text)
+    public function webSettingsAction($web_id = 0)
     {
-        $web_id = $user_text;
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $settings = json_decode(file_get_contents('config/settings.json'), true);
-        $web = new Web($web_id);
+        if($web_id != 0)
+        {
+            $web = new Web($web_id);
+        }
+        else
+        {
+            $web = new Web($this->peer->web_id);
+        }
         if ($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
             $settingsWeb = $web->getSettings();
             $setsWeb = [];
@@ -144,27 +149,30 @@ class WebController extends Controller
         return $response;
     }
 
-    public function webChangeSettingAction($user_text)
+    public function webChangeSettingAction($setting_id, $value, $web_id = 0)
     {
-        $data = explode(' ', $user_text);
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if (count($data) == 3) {
-            $web = new Web($data[0]);
-            if ($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
-                $info = $web->setSetting($data[1], $data[2]);
-                if ($info == 'error_type')
-                    $response->message = 'Значение настройки указано неверно! (обычно 1 - включить, 0 - выключить)';
-                elseif ($info == 'error_not_found')
-                    $response->message = 'Настройка не найдена';
-                elseif ($info)
-                    $response->message = 'Успешно!';
-                elseif ($response->message == '')
-                    $response->message = 'Ошибка! Обратитесь к разработчику';
-            } else
-                $response->message = 'Такой сетки не существует';
+        if($web_id != 0)
+        {
+            $web = new Web($web_id);
+        }
+        else
+        {
+            $web = new Web($this->peer->web_id);
+        }
+        if ($web->isExists() && $web->owner_id == $this->user->id || ($this->user->is_dev == 1) || $web->isAdmin($this->user)) {
+            $info = $web->setSetting($setting_id, $value);
+            if ($info == 'error_type')
+                $response->message = 'Значение настройки указано неверно! (обычно 1 - включить, 0 - выключить)';
+            elseif ($info == 'error_not_found')
+                $response->message = 'Настройка не найдена';
+            elseif ($info)
+                $response->message = 'Успешно!';
+            elseif ($response->message == '')
+                $response->message = 'Ошибка! Обратитесь к разработчику';
         } else
-            $response->message = 'Параметры не верны, проверьте написание команды';
+            $response->message = 'Такой сетки не существует';
         return $response;
     }
 
@@ -363,12 +371,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function allAction($user_text)
+    public function allAction($web_id = 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -383,12 +391,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function dayAction($user_text)
+    public function dayAction($web_id= 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -403,12 +411,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function weekAction($user_text)
+    public function weekAction($web_id = 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -423,12 +431,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function peerAllAction($user_text)
+    public function peerAllAction($web_id = 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -444,12 +452,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function peerDayAction($user_text)
+    public function peerDayAction($web_id = 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -465,12 +473,12 @@ class WebController extends Controller
         return $response;
     }
 
-    public function peerWeekAction($user_text)
+    public function peerWeekAction($web_id = 0)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == intval($user_text) && $user_text != '') {
-            $web = new Web(intval($user_text));
+        if ($web_id != 0) {
+            $web = new Web(intval($web_id));
         } else {
             $web = new Web($this->peer->web_id);
         }
@@ -548,7 +556,7 @@ class WebController extends Controller
         return $response;
     }
 
-    public function WebInfoAction($user_text)
+    public function WebInfoAction()
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -556,29 +564,27 @@ class WebController extends Controller
         $list = '';
         if ($web !== false) {
             if ($web->owner_id == $this->user->id || $this->user->is_dev || $web->isAdmin($this->user)) {
-                if ($user_text == '') {
-                    $peers = Peer::findByWeb($this->peer->web_id);
-                    $web = new Web($this->peer->web_id);
-                    $list = "Актив админов из сетки {$web->name}" . PHP_EOL;
-                    $number = 1;
-                    foreach ($peers as $peer) {
-                        $peer = new Peer($peer['id']);
-                        $owner = new User($peer->owner_id);
-                        $admins = UserPeer::getAdmins($peer->id);
+                $peers = Peer::findByWeb($this->peer->web_id);
+                $web = new Web($this->peer->web_id);
+                $list = "Актив админов из сетки {$web->name}" . PHP_EOL;
+                $number = 1;
+                foreach ($peers as $peer) {
+                    $peer = new Peer($peer['id']);
+                    $owner = new User($peer->owner_id);
+                    $admins = UserPeer::getAdmins($peer->id);
 //                        $list .= "$number) Беседа {$peer['title']} " . PHP_EOL . " Было участников: {$peer['users_count_old']} Стало: {$peer['users_count_old']}" . PHP_EOL . "Киков за вчера и сегодня: {$peer['count_kick_old']}/{$peer['count_kick']}" . PHP_EOL . "Вышли сами: хз скок, придумайте как посчитать...." . PHP_EOL;
-                        $list .= $this->render('web/peer_info', [
-                            'peer' => $peer,
-                            'owner' => $owner,
-                            'adminList' => $this->render('admin/list', [
-                                'admins' => $admins,
-                                'peer' => $peer
-                            ])
-                        ]);
-                        $number++;
-                        if ($number % 5 == 0) {
-                            $this->vk->messagesSend($this->peer->id, $list);
-                            $list = '';
-                        }
+                    $list .= $this->render('web/peer_info', [
+                        'peer' => $peer,
+                        'owner' => $owner,
+                        'adminList' => $this->render('admin/list', [
+                            'admins' => $admins,
+                            'peer' => $peer
+                        ])
+                    ]);
+                    $number++;
+                    if ($number % 5 == 0) {
+                        $this->vk->messagesSend($this->peer->id, $list);
+                        $list = '';
                     }
                 }
                 $response->message = $list;

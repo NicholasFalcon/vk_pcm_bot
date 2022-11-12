@@ -13,7 +13,7 @@ use core\Response;
 
 class AdminController extends Controller
 {
-    public function editRoleAction($object, $user_text): Response
+    public function editRoleAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -21,7 +21,7 @@ class AdminController extends Controller
             $response->message = 'Вы не создатель беседы!';
             return $response;
         }
-        $user = $this->getUserFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
         if ($user === false) {
             $response->message = 'Я не знаю данного пользователя';
             return $response;
@@ -63,41 +63,35 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function MutePeerAction($user_text): Response
+    public function MutePeerAction($time): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         if ($this->user->is_dev == 1 || $this->userPeer->haveAccess(Role::MUTE_ACCESS)) {
-            if ($user_text != '' && is_numeric($user_text)) {
-                if ($this->peer->MutePeer == 0) {
-                    if ($user_text > 0) {
-                        $this->peer->MutePeer = 1;
+            if ($this->peer->MutePeer == 0) {
+                if ($time > 0) {
+                    $this->peer->MutePeer = 1;
 //                        $this->peer->TimeMute = time(); //Добавь в бд это поле
-                        $this->peer->save();
-                        $second = $user_text % 60;
-                        $minutes = floor($user_text / 60);
-                        $hours = floor($user_text / 3600);
-                        $minute = $minutes - $hours * 60;
-                        if ($user_text < 60)
-                            $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $second cекунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
-                        if ($user_text >= 60 && $user_text < 3600)
-                            $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $minutes минут $second секунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
-                        elseif ($user_text >= 3600)
-                            $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $hours часов $minute минут $second секунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
+                    $this->peer->save();
+                    $second = $time % 60;
+                    $minutes = floor($time / 60);
+                    $hours = floor($time / 3600);
+                    $minute = $minutes - $hours * 60;
+                    if ($time < 60)
+                        $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $second cекунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
+                    if ($time >= 60 && $time < 3600)
+                        $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $minutes минут $second секунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
+                    elseif ($time >= 3600)
+                        $this->vk->messagesSend($this->peer->id, "В беседе объявлен тихий час на $hours часов $minute минут $second секунд. Лишь имеющие доступ могут общаться. Остальные будут кикнуты за любое сообщение....");
 //                    $this->userPeer->createCallback("В беседе снят тихий час. Все участники снова могут общаться.", $this->peer->id, time() + intval($user_text));
-                        $this->userPeer->createCallback('unmutePeer', time() + intval($user_text));
-                    } else
-                        $response->message = "Отриацательные значения или 0 нельзя. На сколько секунд объявить тишину в беседе?"
-                            . PHP_EOL . "1 минута = 60"
-                            . PHP_EOL . "10 минут = 600"
-                            . PHP_EOL . "1 час = 3600";
+                    $this->userPeer->createCallback('unmutePeer', time() + intval($time));
                 } else
-                    $response->message = "В беседе итак объявлен тихий чай. Он будет снят через %Value%"; //Добавь в бдшку поле выше
+                    $response->message = "Отриацательные значения или 0 нельзя. На сколько секунд объявить тишину в беседе?"
+                        . PHP_EOL . "1 минута = 60"
+                        . PHP_EOL . "10 минут = 600"
+                        . PHP_EOL . "1 час = 3600";
             } else
-                $response->message = "На сколько секунд объявить тишину в беседе?"
-                    . PHP_EOL . "1 минута = 60"
-                    . PHP_EOL . "10 минут = 600"
-                    . PHP_EOL . "1 час = 3600";
+                $response->message = "В беседе итак объявлен тихий чай. Он будет снят через %Value%"; //Добавь в бдшку поле выше
         } else
             $response->message = "Вы не имеете доступ к данной команде.";
         return $response;
@@ -395,11 +389,10 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function TotalAction($object, $user_text): Response
+    public function TotalAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $username = $user_text;
         $user = $this->getUserFromMessage($username, $object);
         if ($this->user->is_dev == 1) {
             if ($user !== false) {
@@ -412,11 +405,10 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function RemoveTotalAction($object, $user_text): Response
+    public function RemoveTotalAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $username = $user_text;
         $user = $this->getUserFromMessage($username, $object);
         if ($this->user->is_dev == 1) {
             if ($user !== false) {
@@ -428,11 +420,11 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function warningAction($object, $user_text): Response
+    public function warningAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
         $userPeer = UserPeer::findsByPeerAndUser($user->id, $this->peer->id);
         if ($user->id == $this->user->id) {
             $response->message = "Нельзя выдать пред самому себе.";
@@ -478,12 +470,12 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function banAction($object, $user_text): Response
+    public function banAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
-        $group = $this->getGroupFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
+        $group = $this->getGroupFromMessage($username, $object);
         if ($user->is_dev == 1) {
             $response->message = "Не могу забанить СОЗДАТЕЛЯ БОТА!";
             return $response;
@@ -527,12 +519,12 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function kickAction($object, $user_text): Response
+    public function kickAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
-        $group = $this->getGroupFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
+        $group = $this->getGroupFromMessage($username, $object);
         if ($user->is_dev == 1) {
             $response->message = "Не могу выгнать СОЗДАТЕЛЯ БОТА!";
             return $response;
@@ -574,13 +566,11 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function muteUserAction($user_text, $object): Response
+    public function muteUserAction($time, $username, $object): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $vars = explode(' ', $user_text);
-        $username = $vars[1]??'';
-        $time_to_mute = $vars[0];
+        $time_to_mute = $time;
         $user = $this->getUserFromMessage($username, $object);
         if ($user->is_dev == 1) {
             $response->message = "Не могу заглушить СОЗДАТЕЛЯ БОТА!";
@@ -625,11 +615,11 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function removeMuteUserAction($user_text, $object): Response
+    public function removeMuteUserAction($username, $object): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
         if($this->user->id == $user->id) {
             $response->message = "Нельзя убрать мут с самого себя!";
             return $response;
@@ -647,11 +637,11 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function removeWarningAction($object, $user_text): Response
+    public function removeWarningAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
         if ($user->id == $this->user->id) {
             $response->message = 'Вы не можете снять предупреждение с себя! Не будьте букой.';
             return $response;
@@ -687,12 +677,12 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function removeBanAction($object, $user_text): Response
+    public function removeBanAction($object, $username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user = $this->getUserFromMessage($user_text, $object);
-        $group = $this->getGroupFromMessage($user_text, $object);
+        $user = $this->getUserFromMessage($username, $object);
+        $group = $this->getGroupFromMessage($username, $object);
         if ($this->userPeer->haveAccess(Role::BAN_ACCESS) || ($this->user->is_dev == 1)) {
             if ($user !== false) {
                 $userPeer = UserPeer::findsByPeerAndUser($user->id, $this->peer->id);
@@ -734,14 +724,13 @@ class AdminController extends Controller
     }
 
 
-    public function SetChatUrlAction($user_text): Response
+    public function SetChatUrlAction($url): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         if ($this->user->is_dev == 1 || $this->userPeer->role_id == Role::MAIN_ADMIN) {
-            $url = preg_match('/(https|http):\/\/vk\.me\/join/', $user_text);
-            if ($url == 1) {
-                $this->peer->url = $user_text;
+            if (preg_match('/(https|http):\/\/vk\.me\/join/', $url)) {
+                $this->peer->url = $url;
                 $this->peer->save();
                 $response->message = "Чатссылка установлена.";
             } else
@@ -900,19 +889,16 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function RulesSetAction($user_text): Response
+    public function RulesSetAction($rules): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text != '') {
-            if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev == 1) {
-                $this->peer->rules = $user_text;
-                $this->peer->save();
-                $response->message = "Правила установлены.";
-            } else
-                $response->message = "Вы не являетесь администратором в данной беседе!";
+        if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev == 1) {
+            $this->peer->rules = $rules;
+            $this->peer->save();
+            $response->message = "Правила установлены.";
         } else
-            $response->message = "Введите текст правил после команды.";
+            $response->message = "Вы не являетесь администратором в данной беседе!";
         return $response;
     }
 
@@ -945,19 +931,16 @@ class AdminController extends Controller
         return $response;
     }
 
-    public function SetHelloMessageAction($user_text): Response
+    public function SetHelloMessageAction($hello_message): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text != '') {
-            if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev == 1) {
-                $this->peer->HelloMessage = $user_text;
-                $this->peer->save();
-                $response->message = "Приветствие установлено.";
-            } else
-                $response->message = "Вы не являетесь администратором в данной беседе!";
+        if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev == 1) {
+            $this->peer->HelloMessage = $hello_message;
+            $this->peer->save();
+            $response->message = "Приветствие установлено.";
         } else
-            $response->message = "Введите текст приветствия.";
+            $response->message = "Вы не являетесь администратором в данной беседе!";
         return $response;
     }
 

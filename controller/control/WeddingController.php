@@ -3,6 +3,7 @@
 namespace controller\control;
 
 use comboModel\UserPeer;
+use core\App;
 use core\Controller;
 use model\User;
 use core\Response;
@@ -11,22 +12,12 @@ use model\WeddingKids;
 
 class WeddingController extends Controller
 {
-    public function weddingAction($object, $user_text)
+    public function weddingAction($object, $username)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $word = "-";
-        $regUser = "~\[id(?<id>[0-9]*)\|[^\[\]\|]*\]~";
-        $regUrl = "~https://vk.com/(?<domain>.*)~";
-        $regId = "~https://vk.com/id(?<id>[0-9]*)~";
-        if (preg_match($regUser, $user_text, $matches)) {
-            $user_id = intval($matches['id']);
-            $user = new User($user_id);
-        } elseif (preg_match($regId, $user_text, $matches)) {
-            $user = User::findById($matches['id']);
-        } elseif (preg_match($regUrl, $user_text, $matches)) {
-            $user = User::findByDomain($matches['domain']);
-        }
+        $user = $this->getUserFromMessage($username, $object);
         if (strpos($object['message']['reply_message']['from_id'], $word) !== false) {
             $response->message = "";
         } elseif ($object['message']['reply_message']['from_id'] == $this->user->id) {
@@ -59,7 +50,7 @@ class WeddingController extends Controller
                 if ($wedding === false) {
                     $wedding = Wedding::findByUserId($user->id, $this->peer->id);
                     if ($wedding === false) {
-                        $userPeer = UserPeer::findsByPeerAndUser($matches[1], $this->peer->id);
+                        $userPeer = UserPeer::findsByPeerAndUser($user->id, $this->peer->id);
                         $wedding = new Wedding();
                         $wedding->sec_user = $userPeer->user_id;
                         $wedding->first_user = $this->user->id;
@@ -200,26 +191,14 @@ class WeddingController extends Controller
         return $response;
     }
 
-    public function SetKidsAction($user_text, $object)
+    public function SetKidsAction($object, $username = '')
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $regUser = "~\[id(?<id>[0-9]*)\|[^\[\]\|]*\]~";
-        $regUrl = "~https://vk.com/(?<domain>.*)~";
-        $regId = "~https://vk.com/id(?<id>[0-9]*)~";
-        if (preg_match($regUser, $user_text, $matches)) {
-            $user_id = intval($matches['id']);
-            $user = User::findById($user_id);
-        } elseif (preg_match($regId, $user_text, $matches)) {
-            $user = User::findById($matches['id']);
-        } elseif (preg_match($regUrl, $user_text, $matches)) {
-            $user = User::findByDomain($matches['domain']);
-        } else {
-            $user = User::findById(intval($user_text));
-        }
+        $user = $this->getUserFromMessage($username, $object);
         $id = $this->getIdFromMessage($object);
         $wedding = Wedding::findByUserId($this->user->id, $this->peer->id);
-        if ($user_text == '' && 0 < $id) {
+        if ($username == '' && 0 < $id) {
             if ($this->user->id != $id && $id != $wedding->first_user && $id != $wedding->sec_user) {
                 if ($wedding != false) {
                     $kids = WeddingKids::findKid($id, $this->peer->id);

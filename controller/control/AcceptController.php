@@ -36,11 +36,11 @@ class AcceptController extends Controller
         return $response;
     }
 
-    public function indexAction($user_text): Response
+    public function indexAction($id): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $confirmation = new UserConfirmation($user_text);
+        $confirmation = new UserConfirmation($id);
         if ($confirmation->isExists()) {
             if ($confirmation->user_id == $this->user->id) {
                 $action = $confirmation->getAction();

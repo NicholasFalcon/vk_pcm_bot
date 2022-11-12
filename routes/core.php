@@ -2,7 +2,11 @@
 
 use controller\control\CoreController;
 use core\Routing;
-use core\Validation;
+use Validation\Properties\LengthProperty;
+use Validation\Validation;
+use Validation\Validators\IntValidator;
+use Validation\Validators\LengthValidator;
+use Validation\Validators\WordValidator;
 
 Routing::group('беседа', function () {
     Routing::setForPeer('инициализация', CoreController::class, 'init');
@@ -15,9 +19,10 @@ Routing::setCommandForPeer('chat_kick_user', CoreController::class, 'leaveUser')
 Routing::setForPeer('помощь', CoreController::class, 'help');
 
 Routing::group('тест', function () {
-    Routing::setForPeer(':number', CoreController::class, 'testInt', (new Validation())
-        ->setValidation('number', Validation::INTEGER));
-    Routing::setForPeer(':text и число :number', CoreController::class, 'testDouble', (new Validation())
-        ->setValidation('number', Validation::INTEGER)
-        ->setValidation('text', Validation::WORD, Validation::LENGTH('text', 10)));
+    Routing::setForPeer(':number', CoreController::class, 'testInt', Validation::create()
+        ->setValidation('number', IntValidator::create()));
+    Routing::setForPeer(':text и число :number', CoreController::class, 'testDouble', Validation::create()
+        ->setValidation('number', IntValidator::create())
+        ->setValidation('text', WordValidator::create(), LengthValidator::create(LengthProperty::create()
+            ->set(LengthProperty::MAX, 10))));
 });

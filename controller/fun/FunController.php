@@ -86,37 +86,34 @@ class FunController extends Controller
         return $response;
     }
 
-    public function sendMesAction($user_text)
+    public function sendMesAction($peer_id, $text)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($this->userPeer->status >= $this->peer->getSetting(14) || $this->user->is_dev == 1) {
-            $params = explode(" ", $user_text);
-            $ts2 = $params[0] + \App::$peerStartNumber;
-            $ts = $this->peer->id - \App::$peerStartNumber;
-            $peer = new Peer($ts2);
-            if(preg_match('/(https|http):\/\/vk\.com/', $user_text))
+        if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev == 1) {
+            $peer_id = $peer_id + App::$peerStartNumber;
+            $from_peer = $this->peer->id - App::$peerStartNumber;
+            $peer = new Peer($peer_id);
+            if(preg_match('/(https|http):\/\/vk\.com/', $text))
             {
                 $response->message = 'Ссылка в тексте на вк, не гуд!';
                 return $response;
             }
-            if(preg_match('/(https|http):\/\/vk\.me\/join/', $user_text))
+            if(preg_match('/(https|http):\/\/vk\.me\/join/', $text))
             {
                 $response->message = 'Ссылка в тексте на вк, не гуд!';
                 return $response;
             }
-            if (is_numeric($params[0]) && $params[1] != '' && $peer->title != false && $ts != $params[0]) {
-                $str = str_replace("{$params[0]}", '', $user_text);
+            if ($peer->init && $this->peer->id != $peer->id) {
                 if ($this->user->is_dev == 1) {
                     $nick = "[id{$this->user->id}|Разработчика бота]";
                 } else
                     $nick = "[id{$this->user->id}|{$this->user->first_name_nom}]";
-                $peer = Peer::findById(\App::$peerStartNumber + $params[0]);
                 if($this->peer->getSetting(21) == 1)
                 {
                     if($peer->getSetting(21) == 1)
                     {
-                        $this->vk->messagesSend($peer->id, $str . PHP_EOL . "Сообщение от {$nick}" . PHP_EOL . "Беседа {$this->peer->title} (айди беседы {$ts})" . PHP_EOL . "Чтобы ответить введите команду написать.");
+                        $this->vk->messagesSend($peer->id, $text . PHP_EOL . "Сообщение от $nick" . PHP_EOL . "Беседа {$this->peer->title} (айди беседы $from_peer)" . PHP_EOL . "Чтобы ответить введите команду написать.");
                         $response->message = "Ваш текст был отправлен в беседу {$peer->title}";
                     }
                     else
@@ -124,18 +121,11 @@ class FunController extends Controller
                 }
                 else
                     $response->message = "В вашей беседе запрещен обмен сообщениями с другими беседами";
-            } elseif ($params[1] == '' && is_numeric($params[0])) {
-                $response->message = "Введите текст после {$user_text}.";
-            } elseif ($peer->title == false) {
-                $response->message = "Беседы с таким айди не существует, попробуйте команду беседы.";
-            } elseif (!is_numeric($params[0])) {
-                $response->message = "Введите айди беседы после слова написать.";
-            } elseif ($ts == $params[0]) {
+            } elseif (!$peer->init) {
+                $response->message = "Беседы с таким айди не инициализирована, попробуйте команду беседы.";
+            } elseif ($this->peer->id == $peer->id) {
                 $response->message = "Вы пытаетесь написать в свою же беседу.";
             }
-        } else {
-            if ($this->peer->getSetting(16) == 1)
-                $response->message = "У вас слишком маленький статус. Необходимый статус {$this->peer->getSetting(14)}";
         }
         return $response;
     }

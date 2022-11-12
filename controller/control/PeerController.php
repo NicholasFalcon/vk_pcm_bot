@@ -137,15 +137,14 @@ class PeerController extends Controller
         return $response;
     }
 
-    public function KickInactiveAction($user_text)
+    public function KickInactiveAction($days = null)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        $user_text = intval($user_text);
         $inactive_kick_time = $this->peer->getSetting(App::S_INACTIVE_KICK_TIME);
         if ($this->userPeer->haveAccess(Role::KICK_ACCESS) || $this->user->is_dev == 1) {
-            if ($user_text > 0) {
-                $users = UserPeer::SelectNeedKick($user_text, $this->peer->id);
+            if ($days > 0) {
+                $users = UserPeer::SelectNeedKick($days, $this->peer->id);
                 foreach ($users as $user) {
                     $userPeer = UserPeer::findsByPeerAndUser($user['user_id'], $this->peer->id);
                     $userPeer->deleted = 1;
@@ -153,7 +152,7 @@ class PeerController extends Controller
                     $this->vk->messagesRemoveChatUser($this->peer->id, $user['user_id']);
                 }
                 $response->message = "Очистка беседы от неактивных пользователей звершена.";
-            } elseif ($user_text == '') {
+            } elseif (is_null($days)) {
                 $users = UserPeer::SelectNeedKick($inactive_kick_time, $this->peer->id);
                 foreach ($users as $user) {
                     $userPeer = UserPeer::findsByPeerAndUser($user['user_id'], $this->peer->id);
@@ -168,12 +167,12 @@ class PeerController extends Controller
             $response->message = "У вас нет доступа к этой команде.";
         return $response;
     }
-    public function searchAction($user_text)
+    public function searchAction($name)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         if ($this->user->is_dev == 1) {
-            $peers = Peer::findByName($user_text);
+            $peers = Peer::findByName($name);
             $str = 'Беседы:' . PHP_EOL;
             foreach ($peers as $peer) {
                 $id = $peer['id'] - App::$peerStartNumber;

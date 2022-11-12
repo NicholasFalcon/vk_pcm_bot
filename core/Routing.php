@@ -3,6 +3,7 @@
 namespace core;
 
 use Exception;
+use Validation\Validation;
 
 /**
  * класс для распределения функционала бота
@@ -163,7 +164,7 @@ class Routing
             $elem = strtok($pattern, ' ');
             if (strstr($elem, ':')) {
                 $var_name = trim($elem, ':');
-                if ($var_name != 'user_text') {
+                if (!$validation->getFull($var_name)) {
                     $value = strtok($path, ' ');
                 } else {
                     $value = $path;

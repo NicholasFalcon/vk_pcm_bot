@@ -13,16 +13,16 @@ use core\Response;
 
 class   UserController extends Controller
 {
-    public function getAction($user_text): Response
+    public function getAction($username): Response
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $regUser = "~\[id(?<id>[0-9]*)\|[^\[\]\|]*\]~";
-        $user = $this->getObjFromMessage($user_text);
+        $user = $this->getObjFromMessage($username);
         if ($user !== false && $user->isUser()) {
             $response->message = $this->renderProfile($user);
         } else {
-            $user = User::findByNick($user_text);
+            $user = User::findByNick($username);
             if ($user->isExists()) {
                 $response->message = $this->renderProfile($user);
             } else
@@ -107,12 +107,12 @@ class   UserController extends Controller
         return $response;
     }
 
-    public function typesAction($user_text)
+    public function typesAction($text)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
         $numb = rand(0, 100);
-        $response->message = "{$this->user->getName()}, '$user_text' верно на $numb%";
+        $response->message = "{$this->user->getName()}, '$text' верно на $numb%";
         return $response;
     }
 
@@ -256,7 +256,7 @@ class   UserController extends Controller
      * Поиск чего-то по запрсоу пользака
      *
      */
-    public function SearchAction($user_text)
+    public function SearchAction($doc_name)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
@@ -264,7 +264,7 @@ class   UserController extends Controller
             $num = 0;
             while ($num != 1) {
                 $num++;
-                $search = $this->vk->docsSearch($user_text, $num, 5);
+                $search = $this->vk->docsSearch($doc_name, $num, 5);
                 foreach ($search as $result) {
                     foreach ($result['items'] as $item) {
                         sleep(1);
@@ -276,11 +276,11 @@ class   UserController extends Controller
         return $response;
     }
 
-    public function translateTextAction($user_text, $object)
+    public function translateTextAction($object)
     {
         $response = new Response();
         $response->peer_id = $this->peer->id;
-        if ($user_text == '' && $object['message']['reply_message']['text']) {
+        if ($object['message']['reply_message']['text']) {
             $rus = array('q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', ']');
             $lat = array('й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', 'ъ');
             $text = str_replace($rus, $lat, mb_strtolower($object['message']['reply_message']['text']));

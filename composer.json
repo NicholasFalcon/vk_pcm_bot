@@ -20,7 +20,8 @@
     "ext-pdo": "*",
     "ext-pcntl": "*",
     "ext-curl": "*",
-    "seregazhuk/php-watcher": "v0.5.2"
+    "seregazhuk/php-watcher": "v0.5.2",
+    "ext-simplexml": "*"
   },
   "autoload": {
     "psr-4": {
@@ -31,7 +32,10 @@
       "controller\\fun\\": "controller/fun",
       "controller\\user\\": "controller/user",
       "core\\": "core",
-      "model\\": "model"
+      "model\\": "model",
+      "Validation\\": "Validation",
+      "Validation\\Validators\\": "Validation/Validators",
+      "Validation\\Properties\\": "Validation/Properties"
     }
   }
 }

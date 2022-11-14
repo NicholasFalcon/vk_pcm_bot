@@ -11,6 +11,6 @@ class RequireValidator extends Validator implements ValidatorInterface
             $this->error = 'Не введены обязательные данные';
             return false;
         }
-        return true;
+        return parent::validate($text);
     }
 }

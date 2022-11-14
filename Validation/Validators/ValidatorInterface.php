@@ -11,4 +11,6 @@ interface ValidatorInterface
     public function validate(string $text):bool;
 
     public function error():string;
+
+    public function children(...$validators):Validator;
 }

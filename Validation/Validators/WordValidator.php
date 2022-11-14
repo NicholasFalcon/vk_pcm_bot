@@ -11,6 +11,6 @@ class WordValidator extends Validator implements ValidatorInterface
             $this->error = 'Введенные данные не соответствуют одному слову';
             return false;
         }
-        return true;
+        return parent::validate($text);
     }
 }

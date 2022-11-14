@@ -11,7 +11,8 @@ class SelectValidator extends Validator implements ValidatorInterface
         if(!in_array($text, $this->property->get(SelectProperty::SELECT)))
         {
             $this->error = 'Введенные данные не соответствуют значениям ('.implode($this->property->get(SelectProperty::SELECT)).')';
+            return false;
         }
-        return true;
+        return parent::validate($text);
     }
 }

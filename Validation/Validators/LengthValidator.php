@@ -18,6 +18,6 @@ class LengthValidator extends Validator implements ValidatorInterface
             $this->error = 'Длина введенных данных больше '.$this->property->get(LengthProperty::MAX);
             return false;
         }
-        return true;
+        return parent::validate($text);
     }
 }

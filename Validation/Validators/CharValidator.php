@@ -11,6 +11,6 @@ class CharValidator extends Validator implements ValidatorInterface
             $this->error = 'Введенные данные не соответствуют одному символу';
             return false;
         }
-        return true;
+        return parent::validate($text);
     }
 }

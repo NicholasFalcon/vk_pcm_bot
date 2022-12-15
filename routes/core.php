@@ -6,6 +6,7 @@ use Validation\Properties\LengthProperty;
 use Validation\Validation;
 use Validation\Validators\IntValidator;
 use Validation\Validators\LengthValidator;
+use Validation\Validators\NotRequireValidator;
 use Validation\Validators\WordValidator;
 
 Routing::group('беседа', function () {
@@ -22,7 +23,7 @@ Routing::group('тест', function () {
     Routing::setForPeer(':number', CoreController::class, 'testInt', Validation::create()
         ->setValidation('number', IntValidator::create()));
     Routing::setForPeer(':text и число :number', CoreController::class, 'testDouble', Validation::create()
-        ->setValidation('number', IntValidator::create())
+        ->setValidation('number', NotRequireValidator::create()->children(IntValidator::create()))
         ->setValidation('text', WordValidator::create(), LengthValidator::create(LengthProperty::create()
             ->set(LengthProperty::MAX, 10))));
 });

@@ -179,8 +179,8 @@ class Routing
                     return ['error' => 'routing', 'msg' => 'Путь не найден'];
                 }
             }
-            $pattern = trim(substr($pattern, mb_strlen($elem) + 1));
-            $path = trim(substr($path, mb_strlen($value) + 1));
+            $pattern = trim(mb_substr($pattern, mb_strlen($elem) + 1));
+            $path = trim(mb_substr($path, mb_strlen($value) + 1));
         }
         if ($path != '') {
             return ['error' => 'bad_routing', 'msg' => 'Обнаружен текст после команды, где он не ожидается'];

@@ -14,13 +14,12 @@
     "swoole/ide-helper": "dev-master"
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.1",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-pdo": "*",
     "ext-pcntl": "*",
     "ext-curl": "*",
-    "seregazhuk/php-watcher": "v0.5.2",
     "ext-simplexml": "*"
   },
   "autoload": {

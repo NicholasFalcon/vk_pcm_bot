@@ -861,10 +861,8 @@ class AdminController extends Controller
         if ($this->userPeer->role_id == Role::MAIN_ADMIN || $this->user->is_dev) {
             $days = floor((time() - $this->peer->days) / 86400);
             $count = count(UserPeer::getAdmins($this->peer->id));
-            $color = "positive";
-            if ($this->peer->getSetting(18) == 1)
-                $color = "Зелёный";
-            elseif ($this->peer->getSetting(18) == 2)
+            $color = "Зелёный";
+            if ($this->peer->getSetting(18) == 2)
                 $color = "Красный";
             elseif ($this->peer->getSetting(18) == 3)
                 $color = "Белый";

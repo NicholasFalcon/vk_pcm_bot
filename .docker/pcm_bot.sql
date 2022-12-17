@@ -57,41 +57,41 @@ create table `groups`
 
 create table hero
 (
-    id          int                                        not null
+    id          int                       not null
         primary key,
-    class       char(255) default 'Воин'                   null,
-    atk         int       default 1                        null,
-    def         int       default 1                        null,
-    exp         int       default 0                        null,
-    stamina_tst int                                        null,
-    max_stamina int       default 5                        null,
-    stamina     int       default 5                        null,
-    status      char(255) default 'Отдых'                  null,
-    gold        int       default 0                        null,
-    level       int       default 1                        null,
-    gang        int       default 0                        null,
-    national    int                                        null,
-    target      int                                        null
+    class       char(255) default 'Воин'  null,
+    atk         int       default 1       null,
+    def         int       default 1       null,
+    exp         int       default 0       null,
+    stamina_tst int                       null,
+    max_stamina int       default 5       null,
+    stamina     int       default 5       null,
+    status      char(255) default 'Отдых' null,
+    gold        int       default 0       null,
+    level       int       default 1       null,
+    gang        int       default 0       null,
+    national    int                       null,
+    target      int                       null
 );
 
 create table peers
 (
-    id              int                                                    not null
+    id              int           not null
         primary key,
-    title           text                                                   null,
-    owner_id        int          default 0                                 null,
-    init            int          default 0                                 null,
-    web_id          int          default 0                                 null,
-    url             char(255)                                              null,
-    autokick        int          default 0                                 null,
-    users_count     int          default 1                                 null,
-    users_count_old int          default 0                                 null,
-    count_kick      int          default 0                                 null,
-    count_kick_old  int          default 0                                 null,
-    HelloMessage    varchar(4500)                                          null,
-    days            int          default 0                                 null,
-    MutePeer        int          default 0                                 null,
-    rules           varchar(4500)                                          null
+    title           text          null,
+    owner_id        int default 0 null,
+    init            int default 0 null,
+    web_id          int default 0 null,
+    url             char(255)     null,
+    autokick        int default 0 null,
+    users_count     int default 1 null,
+    users_count_old int default 0 null,
+    count_kick      int default 0 null,
+    count_kick_old  int default 0 null,
+    HelloMessage    varchar(4500) null,
+    days            int default 0 null,
+    MutePeer        int default 0 null,
+    rules           varchar(4500) null
 );
 
 create table callback
@@ -187,6 +187,23 @@ create table rewards
             on update cascade on delete cascade
 );
 
+create table roles
+(
+    id       int auto_increment
+        primary key,
+    owner_id int default 0 null,
+    title    varchar(50)   null
+);
+
+create table roles_access
+(
+    role_id   int null,
+    access_id int null
+);
+
+create index roles_access_role_id_access_id_index
+    on roles_access (role_id, access_id);
+
 create table skills
 (
     column_1   int          null,
@@ -259,34 +276,34 @@ create table user_web_info
 
 create table users
 (
-    id             int                                 not null
+    id             int                           not null
         primary key,
-    first_name_nom varchar(255)                        null,
-    last_name_nom  varchar(255)                        null,
-    sex            int          default 0              null,
-    domain         varchar(255)                        null,
-    first_name_gen varchar(255)                        null,
-    last_name_gen  varchar(255)                        null,
-    first_name_dat varchar(255)                        null,
-    last_name_dat  varchar(255)                        null,
-    first_name_acc varchar(255)                        null,
-    last_name_acc  varchar(255)                        null,
-    first_name_ins varchar(255)                        null,
-    last_name_ins  varchar(255)                        null,
-    first_name_abl varchar(255)                        null,
-    last_name_abl  varchar(255)                        null,
-    nick           varchar(50)                         null,
-    pin            varchar(4)                          null,
-    is_callable    int          default 1              null,
-    is_dev         int          default 0              null,
-    api_key        varchar(20)                         null,
-    checker        int          default 0              null,
-    first          varchar(255)                        null,
-    second         varchar(255)                        null,
-    country        varchar(255) default 'Россия'       null,
-    stiker         int          default 0              null,
-    black_list     int          default 0              null,
-    user_action    varchar(50)                         null
+    first_name_nom varchar(255)                  null,
+    last_name_nom  varchar(255)                  null,
+    sex            int          default 0        null,
+    domain         varchar(255)                  null,
+    first_name_gen varchar(255)                  null,
+    last_name_gen  varchar(255)                  null,
+    first_name_dat varchar(255)                  null,
+    last_name_dat  varchar(255)                  null,
+    first_name_acc varchar(255)                  null,
+    last_name_acc  varchar(255)                  null,
+    first_name_ins varchar(255)                  null,
+    last_name_ins  varchar(255)                  null,
+    first_name_abl varchar(255)                  null,
+    last_name_abl  varchar(255)                  null,
+    nick           varchar(50)                   null,
+    pin            varchar(4)                    null,
+    is_callable    int          default 1        null,
+    is_dev         int          default 0        null,
+    api_key        varchar(20)                   null,
+    checker        int          default 0        null,
+    first          varchar(255)                  null,
+    second         varchar(255)                  null,
+    country        varchar(255) default 'Россия' null,
+    stiker         int          default 0        null,
+    black_list     int          default 0        null,
+    user_action    varchar(50)                   null
 );
 
 create table users_peer_info
@@ -382,37 +399,35 @@ create table words
     topic char(255) null
 );
 
-create table roles
+create table settings
 (
-    id int auto_increment,
-    owner_id int default 0 null,
-    title varchar(50) null,
-    constraint roles_pk
+    id            int auto_increment,
+    name          varchar(100) null,
+    title         varchar(100) null,
+    default_value text         null,
+    type          varchar(100) null,
+    constraint settings_pk
         primary key (id)
 );
 
-INSERT INTO pcm_bot.roles (owner_id, title) VALUES (DEFAULT, 'Участник');
-INSERT INTO pcm_bot.roles (owner_id, title) VALUES (DEFAULT, 'Главный админ');
+create unique index settings_name_uindex
+    on settings (name);
 
-create table roles_access
-(
-    role_id int null,
-    access_id int null
-);
+INSERT INTO roles (owner_id, title) VALUES (DEFAULT, 'Участник');
+INSERT INTO roles (owner_id, title) VALUES (DEFAULT, 'Главный админ');
 
-create index roles_access_role_id_access_id_index
-    on roles_access (role_id, access_id);
-
-create table rp_text
-(
-    id      int auto_increment,
-    name    varchar(100)       not null,
-    m_text  varchar(255)       null,
-    f_text  varchar(255)       null,
-    on_body smallint default 0 null,
-    constraint rp_text_id_uindex
-        unique (id)
-);
-
-alter table rp_text
-    add primary key (id);
+INSERT INTO settings (`name`, title, default_value, `type`) VALUES ('kick_leavers', 'Кикать вышедших пользователей?', '0', 'boolean'),
+                                                                   ('use_triggers', 'Отключить триггеры?', '0', 'boolean'),
+                                                                   ('number_warn', 'Количество предов', '3', 'int'),
+                                                                   ('time_kick', 'Кик неактива через (дней):', '7', 'int'),
+                                                                   ('kick_inactive', 'Кикать неактив?', '1', 'boolean'),
+                                                                   ('kick_url', 'Кикать за ссылки?', '0', 'boolean'),
+                                                                   ('kick_invite_url', 'Кикать за ссылки на беседы?', '0', 'boolean'),
+                                                                   ('kick_spam', 'Кикать за спам (4 сообщения)?', '0', 'boolean'),
+                                                                   ('kick_group', 'Кикать сообщества?', '1', 'boolean'),
+                                                                   ('Attention', 'Сколько раз в день можно созвать всех?', '2', 'int'),
+                                                                   ('KickGroup', 'Можно ли кикать сообщества?', '0', 'boolean'),
+                                                                   ('ColorButton', 'Цвет всех кнопок? (1 зелёный, 2 красный, 3 белый, 4 синий)', '1', 'int'),
+                                                                   ('HelloMessage', 'Включить приветствие?', '1', 'boolean'),
+                                                                   ('Rules', 'Писать правила вместе с приветствием?', '0', 'boolean'),
+                                                                   ('MessagesPeer', 'Принимать сообщения от других бесед?', '1', 'boolean');

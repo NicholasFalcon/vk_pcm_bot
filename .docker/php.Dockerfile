@@ -1,4 +1,4 @@
-FROM php:7.4-cli-alpine
+FROM php:8.1-cli-alpine
 
 ARG swoole_ver
 
@@ -9,7 +9,7 @@ RUN set -ex \
     && cd /tmp \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk update \
-    && apk add vim git autoconf openssl-dev build-base zlib-dev re2c libpng-dev oniguruma-dev
+    && apk add vim git autoconf openssl-dev build-base zlib-dev re2c libpng-dev oniguruma-dev linux-headers
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -21,7 +21,7 @@ RUN php -m \
     && php -m
 
 #install xdebug
-RUN pecl install xdebug-2.8.1 \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 # install swoole
@@ -52,16 +52,14 @@ RUN cd /usr/local/etc/php/conf.d \
     && { \
         #Add an Xdebug node
         echo "[Xdebug]"; \
-        #Enable remote connection
-        echo "xdebug.remote_enable = 1"; \
+        echo "xdebug.mode = debug"; \
         #This is a multi person debugging, but now it's a little difficult, so I won't start it for the time being
         echo ";xdebug.remote_connect_back = On"; \
-        #Auto start remote debugging
-        echo "xdebug.remote_autostart  = true"; \
+        echo "xdebug.start_with_request  = yes"; \
         #Here, the host can fill in the IP address taken previously, or fill in the IP address host.docker.internal  。
-        echo "xdebug.remote_host = host.docker.internal"; \
+        echo "xdebug.client_host = host.docker.internal"; \
         #Here the port is fixed to fill in 19000. Of course, other ports can be filled in. It needs to be ensured that they are not occupied
-        echo "xdebug.remote_port = 19000"; \
+        echo "xdebug.client_port = 19000"; \
         #Fixed here
         echo "xdebug.idekey=PHPSTORM"; \
         #Save execution results to 99 Xdebug- enable.ini  Go inside

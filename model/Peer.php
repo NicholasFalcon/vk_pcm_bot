@@ -67,8 +67,11 @@ class Peer extends Model
                 ->where("web_id = '$this->web_id' and setting_id = '$setting_id'")
                 ->queryOne('value');
             if ($result === false || $result === null) {
-                $settings = json_decode(file_get_contents('config/settings.json'), true);
-                return $settings[$setting_id]['default'];
+                $setting = new Setting($setting_id);
+                if($setting->isExists())
+                {
+                    return $setting->default_value;
+                }
             }
         }
         return $result;

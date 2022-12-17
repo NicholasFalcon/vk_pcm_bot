@@ -11,7 +11,7 @@ use ReflectionClass;
 class Model
 {
     public int $id;
-    private $data = [];
+    private mixed $data = [];
     protected static string $table;
     private bool $create = false;
 

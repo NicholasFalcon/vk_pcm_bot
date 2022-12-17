@@ -20,7 +20,7 @@ class Router
     private Vk $vk;
     private $ts = 0;
     private array $processes = [];
-    public int $timeStart = 0;
+    public float $timeStart = 0;
     private Routing $routing_peer;
     private Routing $routing_user;
     private Routing $commands_peer;
@@ -90,7 +90,7 @@ class Router
         return true;
     }
 
-    public function createAction($data)
+    public function createAction($data): void
     {
         $this->timeStart = time()+microtime(1);
         $action = $data;

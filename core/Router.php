@@ -13,7 +13,7 @@ use comboModel\UserPeer;
 use controller\control\TriggerController;
 use controller\control\CallbackController;
 use model\Web;
-use Swoole\Process;
+use Swoole\Runtime;
 
 class Router
 {
@@ -37,19 +37,29 @@ class Router
         $this->ts = file_get_contents('config/ts.data');;
     }
 
-    public function start()
+    public function start(): void
     {
-        $longPollServer = $this->vk->groupsGetLongPollServer();
-        file_put_contents('config/ts.data', $longPollServer['response']['ts']);
-        echo 'Started!'.PHP_EOL;
-        echo 'Стартанул!'.PHP_EOL;
-        $success = true;
-        while ($success)
-            if(!$this->check($longPollServer))
-            {
-                $success = false;
-            }
-        $this->start();
+        try {
+            Runtime::enableCoroutine();
+        } catch (\Exception $e)
+        {
+            echo $e->getMessage().PHP_EOL;
+            return;
+        }
+        $router = $this;
+        \Swoole\Coroutine\run(function () use ($router) {
+            $longPollServer = $router->vk->groupsGetLongPollServer();
+            file_put_contents('config/ts.data', $longPollServer['response']['ts']);
+            echo 'Started!'.PHP_EOL;
+            echo 'Стартанул!'.PHP_EOL;
+            $success = true;
+            while ($success)
+                if(!$router->check($longPollServer))
+                {
+                    $success = false;
+                }
+            $router->start();
+        });
     }
 
     public function check($longPollServer)
@@ -67,26 +77,17 @@ class Router
         {
             return true;
         }
-        foreach ($dataLongPoll['updates'] as $action)
-        {
+        $router = $this;
+        foreach ($dataLongPoll['updates'] as $action) {
 
-            $router = $this;
-
-            $process = new Process(function (Process $process) use ($router, $action) {
+            \Swoole\Coroutine\go(function () use ($router, $action) {
                 try {
                     $router->createAction($action);
-                }
-                catch (\Exception $e)
-                {
+                } catch (\Exception $e) {
                     echo $e->getMessage();
-                } finally {
-                    $process->exit();
                 }
             });
-
-            $process->start();
         }
-
         return true;
     }
 

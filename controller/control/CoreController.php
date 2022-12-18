@@ -122,7 +122,6 @@ class CoreController extends Controller
 
     public function leaveUserAction($object): Response
     {
-        var_dump($object);
         if (isset($object['message']['action']) && $object['message']['action']['type'] == 'chat_kick_user') {
             if ($object['message']['action']['member_id'] > 0) {
                 $user_id = $object['message']['action']['member_id'];

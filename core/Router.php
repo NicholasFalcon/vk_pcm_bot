@@ -39,27 +39,24 @@ class Router
 
     public function start(): void
     {
-        try {
-            Runtime::enableCoroutine();
-        } catch (\Exception $e)
-        {
-            echo $e->getMessage().PHP_EOL;
-            return;
-        }
-        $router = $this;
-        \Swoole\Coroutine\run(function () use ($router) {
-            $longPollServer = $router->vk->groupsGetLongPollServer();
-            file_put_contents('config/ts.data', $longPollServer['response']['ts']);
-            echo 'Started!'.PHP_EOL;
-            echo 'Стартанул!'.PHP_EOL;
-            $success = true;
-            while ($success)
-                if(!$router->check($longPollServer))
-                {
-                    $success = false;
-                }
-            $router->start();
+        $vk = $this->vk;
+        set_error_handler(function ($errno, $error_string, $error_file, $error_line) use ($vk) {
+            if(Peer::getMain())
+            {
+                $vk->messagesSend(Peer::getMain()->id, "[$errno] $error_string файл $error_file ($error_line)");
+            }
         });
+        $longPollServer = $this->vk->groupsGetLongPollServer();
+        file_put_contents('config/ts.data', $longPollServer['response']['ts']);
+        echo 'Started!'.PHP_EOL;
+        echo 'Стартанул!'.PHP_EOL;
+        $success = true;
+        while ($success)
+            if(!$this->check($longPollServer))
+            {
+                $success = false;
+            }
+        $this->start();
     }
 
     public function check($longPollServer)
@@ -85,6 +82,10 @@ class Router
                     $router->createAction($action);
                 } catch (\Exception $e) {
                     echo $e->getMessage();
+                    if(Peer::getMain())
+                    {
+                        $this->vk->messagesSend(Peer::getMain()->id, $e->getMessage() . ' файл ' . $e->getFile() . '(' . $e->getLine() . ')');
+                    }
                 }
             });
         }

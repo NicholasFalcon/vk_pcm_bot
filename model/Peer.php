@@ -32,6 +32,7 @@ use core\App;
 class Peer extends Model
 {
     public static string $table = 'peers';
+    public static ?Peer $main = null;
 
     public static function findById($id)
     {
@@ -199,5 +200,19 @@ class Peer extends Model
             ->from(UserPeer::$table)
             ->where('role_id = '.intval($role_id))
             ->query();
+    }
+
+    public static function getMain(): bool|Peer
+    {
+        if(is_null(Peer::$main))
+        {
+            $data = parent::findBy('main', 1);
+            if(is_null($data))
+            {
+                return false;
+            }
+            Peer::$main = new Peer($data);
+        }
+        return Peer::$main;
     }
 }

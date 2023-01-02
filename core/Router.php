@@ -421,6 +421,6 @@ class Router
                 $userPeer->save();
             }
         }
-        $this->vk->messagesSend(App::$mainPeer, 'Информация обновлена, чистки проведены');
+        $this->vk->messagesSend(Peer::getMain()->id, 'Информация обновлена, чистки проведены');
     }
 }

@@ -50,6 +50,7 @@ class App
 
     public static function replaceSpecialChars($str)
     {
+        $str = strval($str);
         $str = str_replace("'", "&#039;", $str);
         $str = str_replace('"', '&#039;', $str);
         $str = str_replace('<', '&lt;', $str);
@@ -58,6 +59,7 @@ class App
 
     public static function recoverJson($str)
     {
+        $str = strval($str);
         $str = str_replace('&#039;', '"', $str);
         $str = str_replace('&lt;', '<', $str);
         return str_replace('&gt;', '>', $str);

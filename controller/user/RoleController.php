@@ -70,12 +70,11 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function titleAction($user_text): Response
+    public function titleAction($role_id): Response
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $role_id = intval($user_text);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';

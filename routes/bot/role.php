@@ -2,12 +2,13 @@
 
 use core\Routing;
 use controller\user\RoleController;
+use Validation\Validation;
 
 //Управление ролями
 Routing::setCommandForUser('create_role', RoleController::class, 'create');
 Routing::setCommandForUser('edit_role :role_id', RoleController::class, 'edit');
 Routing::setCommandForUser('role_delete', RoleController::class, 'delete');
-Routing::setCommandForUser('role_title', RoleController::class, 'title');
+Routing::setCommandForUser('role_title :role_id', RoleController::class, 'title');
 
 //Доступы роли к командам
 Routing::setCommandForUser('role_access_trigger', RoleController::class, 'accessRoleTrigger');

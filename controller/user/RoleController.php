@@ -86,12 +86,11 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleTriggerAction($user_text)
+    public function accessRoleTriggerAction($role_id)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $role_id = intval($user_text);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
@@ -112,25 +111,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleKickAction($user_text)
+    public function accessRoleKickAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::TRIGGER_EDITOR_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::TRIGGER_EDITOR_ACCESS);
             }
@@ -150,25 +147,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleBanAction($user_text)
+    public function accessRoleBanAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::KICK_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::KICK_ACCESS);
             }
@@ -188,25 +183,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRolePredAction($user_text)
+    public function accessRolePredAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::BAN_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::BAN_ACCESS);
             }
@@ -226,25 +219,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleMessagePeerAction($user_text)
+    public function accessRoleMessagePeerAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::PRED_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::PRED_ACCESS);
             }
@@ -264,25 +255,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleEditorRoleAction($user_text)
+    public function accessRoleEditorRoleAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::PEER_MESSAGE_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::PEER_MESSAGE_ACCESS);
             }
@@ -302,25 +291,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleMuteAction($user_text)
+    public function accessRoleMuteAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::ROLE_EDITOR_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::ROLE_EDITOR_ACCESS);
             }
@@ -340,25 +327,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleImmuneAction($user_text)
+    public function accessRoleImmuneAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::MUTE_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::MUTE_ACCESS);
             }
@@ -378,25 +363,23 @@ class RoleController extends Controller
         return $response;
     }
 
-    public function accessRoleEndAction($user_text)
+    public function accessRoleEndAction($role_id, $value = null)
     {
         $response = new Response();
         $response->peer_id = $this->user->id;
-        $vars = explode(' ', $user_text);
-        $role_id = intval($vars[0]);
-        $role = Role::findById($role_id);
+        $role = Role::findById(intval($role_id));
         if($role === false)
         {
             $response->message = 'Роль не обнаружена, скорее всего она уже удалена';
             return $response;
         }
-        if(isset($vars[1]))
+        if(isset($value))
         {
-            if($vars[1] == 'yes')
+            if($value == 'yes')
             {
                 $role->setAccess(Role::MUTE_ACCESS);
             }
-            elseif($vars[1] == 'no')
+            elseif($value == 'no')
             {
                 $role->revokeAccess(Role::MUTE_ACCESS);
             }

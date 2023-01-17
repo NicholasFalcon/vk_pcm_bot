@@ -82,25 +82,26 @@ class Routing
         static::set(static::$routes_user, $name, $class, $action, $validation);
     }
 
-    protected static function setCommand(&$commands, $name, $class, $action)
+    protected static function setCommand(&$commands, $name, $class, $action, Validation $validation = null)
     {
         $command = strtok($name, ' ');
         $pattern = trim(str_replace($command, '', $name));
         $commands[$command]['patterns'][] = [
             'class' => $class,
             'action' => $action . 'Action',
-            'pattern' => $pattern
+            'pattern' => $pattern,
+            'validation' => $validation
         ];
     }
 
-    public static function setCommandForPeer($name, $class, $action)
+    public static function setCommandForPeer($name, $class, $action, Validation $validation = null)
     {
-        static::setCommand(static::$commands, $name, $class, $action);
+        static::setCommand(static::$commands, $name, $class, $action, $validation);
     }
 
-    public static function setCommandForUser($name, $class, $action)
+    public static function setCommandForUser($name, $class, $action, Validation $validation = null)
     {
-        static::setCommand(static::$commands_user, $name, $class, $action);
+        static::setCommand(static::$commands_user, $name, $class, $action, $validation);
     }
 
     public function check($path)
@@ -162,14 +163,14 @@ class Routing
         $params = [];
         while ($pattern != '') {
             $elem = strtok($pattern, ' ');
-            if (strstr($elem, ':')) {
+            if (str_contains($elem, ':')) {
                 $var_name = trim($elem, ':');
-                if (!$validation->getFull($var_name)) {
+                if (isset($validation) && !$validation->getFull($var_name)) {
                     $value = strtok($path, ' ');
                 } else {
                     $value = $path;
                 }
-                if (($error = $validation->validate($var_name, $value)) !== true) {
+                if (isset($validation) && ($error = $validation->validate($var_name, $value)) !== true) {
                     return ['error' => 'validation', 'msg' => $error];
                 }
                 $params[$var_name] = $value;
@@ -214,17 +215,18 @@ class Routing
     protected function runCommands($route, $path): array
     {
         $pattern = $route['pattern'];
+        $validation = $route['validation'];
         $params = [];
         while ($pattern != '') {
             $elem = strtok($pattern, ' ');
             $var_name = trim($elem, ':');
-            if ($var_name != 'user_text') {
+            if (isset($validation) && !$validation->getFull($var_name)) {
                 $value = strtok($path, ' ');
             } else {
                 $value = $path;
             }
-            if ($value == '') {
-                return ['error' => 'empty_var', 'msg' => "Переменная '$var_name' не указана"];
+            if (isset($validation) && ($error = $validation->validate($var_name, $value)) !== true) {
+                return ['error' => 'validation', 'msg' => $error];
             }
             $params[$var_name] = $value;
             $pattern = trim(substr($pattern, mb_strlen($elem) + 1));

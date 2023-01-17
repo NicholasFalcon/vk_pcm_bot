@@ -5,7 +5,7 @@ use Swoole\Runtime;
 
 include_once 'core/init.php';
 try {
-    Runtime::enableCoroutine();
+    Runtime::enableCoroutine(false);
 } catch (\Exception $e)
 {
     echo $e->getMessage().PHP_EOL;

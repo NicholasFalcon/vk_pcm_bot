@@ -21,15 +21,15 @@ class Trigger extends Model
     public static function findByCommand($command, $peer_id)
     {
         $data =  App::getPBase()->select()->from(static::$table)->where("`command` = '$command' and `peer_id` = $peer_id")->queryOne('id');
+        if(!is_null($data))
+            return new Trigger($data);
         $data2 = App::getPBase()->select()->from(static::$table)->where("`command` = '$command' and `peer_id` = 0")->queryOne('id');
+        if (!is_null($data2))
+            return new Trigger($data2);
         if($peer_id == 0)
         {
             $data3 = App::getPBase()->select()->from(static::$table)->where("`command` = '$command'")->queryOne('id');
         }
-        if(!is_null($data))
-            return new Trigger($data);
-        if (!is_null($data2))
-            return new Trigger($data2);
         if (isset($data3))
             return new Trigger($data3);
         return false;
